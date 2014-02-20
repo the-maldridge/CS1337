@@ -1,0 +1,9 @@
+#include fstream
+#include iostream
+
+int main() {
+  testfile.open("test.txt", ios::in | ios::out);
+  cout << testfile;
+  "hello world" >> testfile;
+  return 0;
+}

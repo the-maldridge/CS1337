@@ -1,0 +1,77 @@
+Michael Aldridge
+mwa130030
+
+Project 2 psuedocode
+
+
+Init case:
+     open the data file
+     if the file open succeeds
+     	init the vector of structs containing the records
+	getline each record value into the appropriate struct field
+	return
+
+Add Record:
+    create new temp struct
+    input the ID and clear keyboard buffer
+    getline the item description and clear keyboard buffer
+    input quantity and clear keyboard buffer
+    input the wholesale cost and check that wholesale<100 evaluates to true
+    subroutine:
+        input the market cost
+    	  check if the market cost exceeds 100.0
+	  check if the market mark up exceeds 75% markup from wholesale ((market<100) && (wholesale/market <=0.75)) evaluates to true
+	insert the values to the struct & return from subroutine
+    exit to menu
+
+Search Record:
+     begin search by calling the string search function on each itemID
+     	   if found return the record number so it may be displayed
+     search the keyword in the description using the string search function
+     	    if found return the record number so it may be displayed
+     at this point, we can assume it isn't there, return an error code
+     
+
+Edit a record:
+     use the above search methods to locate the record, display it
+     prompt the user for which field they wish to edit by number
+          validate that the number is in between 1 and 5 !(x<1 || x>5)
+     display the specific field and ask for the replacement information
+     accept the input into the vector, if it is a number for cost:
+     	    validate the input numbers to ensure the final cost does not exceed 100,  if the total cost would exceed 100 reprompt for retail cost, if necessary, reprompt for wholesale cost as well
+
+delete a record:
+       use the above search methods to locate a record, display it
+       prompt the user to confirm deletion of record
+       	      normalize input to uppercase with toupper();
+	      compare with a y/n prompt to confirm
+       call vec.erase(vec.begin() + index); //to erase the data entry
+
+display:
+	accept an index to display
+	cout each element of the struct at that vector location
+	return from function
+
+display report:
+	create tab justified table of items, quantity, cost, and wholesale cost
+	compute the total value of quantities in storage
+	compute the total value of items in storage
+	cout the tablestring
+	cout the value report for the footer
+	return from function
+
+I will use the following functions:
+
+int dispMenu(void); //will provide a main menu for program execution
+int load(string, vector); //load the file specified by name into the vector
+int save(string, vector); //serialize the vector back to flat-file format
+int searchRec(string, vector); //search the vector for string provided
+int dispRec(int, vector); //show the record of vector at index given
+int addRec(vector); //add a new record to the end of the vector
+int delRec(int, vector); //confirm and delete the index from the vector
+int editRec(int, vector); //show record, and edit a specific field
+int editMenu(void); //provide an edit specific menu
+bool valCost(int, int); //validate if the cost parameters "work"
+void genReport(vector); //call save and then generate the report
+
+undoubtedly I'll have some small extra validator functions, and maybe a serializer checker to make sure I am writing intelligible data to the file.

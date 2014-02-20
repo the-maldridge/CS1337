@@ -1,0 +1,65 @@
+Michael Aldridge
+mwa130030
+
+Project 3 Psuedocode:
+
+main program flow:
+     	init (create arrays and read in the answer files)
+     	process (iterate over student response and create answer mask)
+     	report (aggregate data and create output file)
+     	close (close file links and then exit)
+
+init:
+	open answer file
+	read first line into tSize
+	create a pointer based array of size tSize
+	read the file in line by line (normalize to upper case)
+	create a 2d array for the student answer file malloc(sizeof(int*)*tSize)
+	read in the student answer file
+	create a mask array the same size as the answer array of type int	
+	create a scores array with size tSize
+
+process:
+	iterate over the response array and write true/false into the mask
+		I'll use nested for loops
+		I'll iterate over the pointer offsets
+		the multiple arrays will be kept in sync by using the same index
+		compute what the score for the test is and add it to the scores array
+	after the mask has been built compute the class score ranges/modes/medians (see below)
+	
+report:
+	open an output file
+	assemble each line of the file
+		 first the name,
+		 then the percentage, and a letter grade (determine with switch)
+		 then the answers, justified to width 2 right/aligned using setw&right
+		 then 2 newlines to add a blank line between students
+	write each line into the file
+	sync the file
+	close the file
+
+close:
+	close all file handles
+	deallocate memory from the pointer array (delete)
+	exit the program
+
+
+calculate mean:
+	  add up all the scores in the array and divide by the number of scores
+
+calculate median:
+	 create a copy of the score array and sort the copy
+	 on the copy:
+	    if the size is odd:
+	       return the value at size/2
+	    if the size is even:
+	       get the value at one down from size/2 and one up from size/2 (quantize down and up to whole numbers)
+	       average these two midpoints
+	       return the average of the midpoints
+	 send the result back
+
+calculate mode:
+	  create an array of size 100
+	  loop through all the grades and for each grade, increment the appropriate index
+	  before returning, find which indicies have the greatest value (but don't sort!!)
+	  return the 1 or more numbers that had the highest occurences as a dynamically built array that will be parsed by the report generator

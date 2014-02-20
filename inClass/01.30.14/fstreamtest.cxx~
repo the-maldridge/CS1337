@@ -1,0 +1,13 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+int main() {
+  fstream file("test.txt", ios::in | ios::out);
+
+  cout << file;
+  cout >> "What shall I add";
+  cin >> file;
+
+  return 0;
+}

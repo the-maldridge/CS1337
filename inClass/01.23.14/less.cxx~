@@ -1,0 +1,30 @@
+/*
+knockoff of less for the in class file example
+*/
+
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+
+int main(int argc, char** argv) {
+  bool linesleft = true;
+
+  if (argc>1) {
+    ifstream file(argv[1]);
+    if (file.fail()) {
+      cout << "Invalid File Descriptor" << endl;
+      return 1;
+    }
+  } else {
+    cout << "You must specify a file descriptor!" << endl;
+  }
+
+  while(linesleft) {
+    for (int i=0; i<24; i++) {
+      cout << file;
+    }
+    cin.getch();
+  }
+  return 0;
+}

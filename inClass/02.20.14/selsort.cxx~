@@ -1,0 +1,25 @@
+#include <iostream>
+#include <cctype>
+using namespace std;
+
+
+char * selsort(char* ptr, int len) {
+  int lowMemLoc=ptr;
+  for(int i=0; i<len; i++) {
+    for(int j=i; j<len; j++) {
+      if(*(ptr+j)<*(ptr+lowMemLoc)) {
+	  lowMemLoc = ptr+j;
+	}
+    }
+    swap(*(ptr+i), *(ptr+lowMemLoc));
+  }
+  return ptr;
+}
+
+
+int main() {
+  int size=10;
+  char foo[size] = {q,w,e,r,t,y,u,i,o,p};
+  selsort(&foo, size);
+  return 0;
+}

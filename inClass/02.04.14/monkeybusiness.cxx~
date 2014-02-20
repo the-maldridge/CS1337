@@ -1,0 +1,22 @@
+#include <fstream>
+#include <iostream>
+#include <string>
+using namespace std;
+
+bool parseInput(array food[POP][DAYS], string fname) {
+  ifstream datfile(fname);
+
+  if (!datfile) {
+    cout << "Could not open data file" << endl;
+    return false;
+  } else {
+    for(int i=0; i<DAYS; i++) {
+      for(int j=0; j<POP; j++) {
+	datfile >> food[i][j];
+      }
+    }
+  }
+
+  datfile.close();
+  return true;
+}

@@ -1,0 +1,41 @@
+Michael Aldridge
+mwa130030
+February 20, 2014
+
+pg 506-507:
+9.3:  The * may refer to multiplication, de-referencing, or declare a pointer.
+9.4:  50 60 70
+      500 300 140
+9.5:  for(int x=0; x<100; x++) {
+      	      cout << *(arr+x) << endl;
+	      }
+9.6:  12040
+9.7:  A,B,E: Valid because pointers can be moved with addition and subtraction.
+      C,D: Invalid because pointers cannot be moved through multiplication/division
+9.8:  A is valid because it just binds the int variable to an int pointer
+      B is valid, it binds an int variable to an int pointer
+      C is invalid because it binds a float variable to an int pointer	
+      D is valid because it binds an int pointer to an int array
+      E is invalid because it attempts to bind to a non-existant resource
+
+pg528:
+9.11: void convert(double &inches) {
+      inches *= 2.54
+      }
+
+pg 534:
+7: The new operator is to dynamically allocate memory for an array
+8: If memory is not available it will either throw an exception or return a null pointer depending on the particular implementation.
+9: The delete keyword dynamically deallocates memory from pointers.
+10: In order to return a pointer, the thing it points to must continue to exist.
+11: A pointer to a constant can be moved but will reference the immutable constant.  A constant pointer can also be moved, but whatever it is pointing to at the moment will behave as a constant.
+12: If a pointer parameter is declared as a constant type, then it is impossible to accidentally modify data that is out of scope.
+
+pg 535:
+27: delete [] tempNumbers;
+28: void getNumber(int *n) {
+    cout << "Enter a number: ";
+    cin >> *n;
+    }
+29: const int *ptr;
+30: int * const ptr;

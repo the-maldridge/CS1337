@@ -10,11 +10,7 @@ Then spits out SSV grade report files
 #include <cctype>
 
 //pull in logging stuff
-#ifdef LOG1
-#include "log1.h"
-#else
 #include "log.h"
-#endif
 
 //back to normal stuff
 using namespace std;

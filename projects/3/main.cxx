@@ -16,7 +16,7 @@ Then spits out SSV grade report files
 using namespace std;
 
 
-bool init(string answers, string tests) {
+bool init(string answers, string tests, char* ansKey, int* ID, char** responses) {
   ifstream key(answers.c_str());
   ifstream toGrade(tests.c_str());
   char* bounce = new char[1024];
@@ -28,7 +28,7 @@ bool init(string answers, string tests) {
     FILE_LOG(logINFO) << "Your selected key contains " << tSize << " answers.";
     
     //build a place to put the answers
-    char* ansKey = new char[tSize];
+    ansKey = new char[tSize];
     
     //read in the answers to the key
     for(int i=0; i<tSize; i++) {
@@ -45,10 +45,10 @@ bool init(string answers, string tests) {
     FILE_LOG(logINFO) << "The test file appears to have " << cSize << " tests";
 
     //build the array for IDs
-    int* ID = new int[cSize];
+    ID = new int[cSize];
 
     //build the array for responses
-    char** responses = new char*[cSize];
+    responses = new char*[cSize];
     for (int i=0; i<cSize; ++i) {
       *(responses+i) = new char[tSize];
     }
@@ -84,8 +84,15 @@ bool init(string answers, string tests) {
   
 
 int main(int argc, char** argv) {
+  //begin the logger
   FILELog::ReportingLevel() = FILELog::FromString(argv[1]?argv[1]:"DEBUG1");
   FILE_LOG(logDEBUG) << "Program Start";
-  init("answers.txt", "exams.txt");
+
+  //init a place to store the test stuff
+  char* key;
+  int* ID;
+  char** tests;
+
+  init("answers.txt", "exams.txt", key, ID, tests);
   return 0;
 }

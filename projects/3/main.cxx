@@ -10,6 +10,7 @@ Then spits out SSV grade report files
 #include <string>
 #include <cctype>
 #include <sstream>
+#include <algorithm>
 //pull in logging stuff
 #include "log.h"
 
@@ -102,7 +103,7 @@ char letterGrade(float percent) {
   }
 }
   
-float* grade(string* ID, char** tests, char* key, string outfile, int cSize, int tSize) {
+void grade(string* ID, char** tests, char* key, string outfile, int cSize, int tSize, float* &grades) {
   //grade the exams
   ofstream report(outfile.c_str());
 
@@ -110,7 +111,7 @@ float* grade(string* ID, char** tests, char* key, string outfile, int cSize, int
     stringstream wrongNums, wrongAns, rightAns; //streams to put the report lines in
     int wrong=0;
 
-    FILE_LOG(logDEBUG1) << "Now grading student " << i+1;
+    FILE_LOG(logINFO) << "Now grading student " << i+1;
     report << *(ID+i) <<endl; //output the ID number to the report
     char* student = *(tests+i); //"copy" single set of responses to pointer
 
@@ -139,7 +140,36 @@ float* grade(string* ID, char** tests, char* key, string outfile, int cSize, int
       report << rightAns.str() << endl;
     } 
     report << endl; //seperator between students
+
+    //save the grade into the array and debug out
+    *(grades+i) = percentGrade;
+    FILE_LOG(logDEBUG3) << "Student scored: " << percentGrade;
   }
+}
+
+double calMedian(float* scores, int cSize) {
+  FILE_LOG(logINFO) << "Now calculating median score";
+
+  //create a new array that can be sorted
+  float* scorestart = scores;
+  float* scoreend = scores+--cSize;
+  double median = 0;
+
+  //use the sort function someone smarter than me wrote
+  FILE_LOG(logDEBUG1) << "Attempting to sort scores";
+  sort(scorestart, scoreend);
+  FILE_LOG(logDEBUG1) << "Sort seems to have succeeded";
+
+  if(cSize%2==0) {
+    //there's an even number of students, average the 2 in the middle
+    median = (*(scores+cSize/2) + *(scores+(cSize/2-1)))/2.0f;
+  } else {
+    //the class is odd and we can just pick the middle number
+    median = *(scores +cSize/2);
+  }
+
+  //return the median
+  return median;
 }
 
 int main(int argc, char** argv) {
@@ -156,13 +186,16 @@ int main(int argc, char** argv) {
 
   //add some more variables for other stuff
   string keyfile, examfile, reportfile;
+  double mean, median, mode;
 
   keyfile = "answers.txt";
   examfile = "exams.txt";
   reportfile = "report.txt";
 
   if(init(keyfile, examfile, key, ID, tests, grades, tSize, cSize)) {
-    grades = grade(ID, tests, key, reportfile, cSize, tSize);
+    grade(ID, tests, key, reportfile, cSize, tSize, grades);
+    median = calMedian(grades, cSize);
+    FILE_LOG(logINFO) << "Class median score is: " << median;
   } else {
     FILE_LOG(logERROR) << "A load error occured, exiting...";
   }

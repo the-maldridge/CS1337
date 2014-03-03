@@ -145,6 +145,8 @@ void grade(string* ID, char** tests, char* key, string outfile, int cSize, int t
     *(grades+i) = percentGrade;
     FILE_LOG(logDEBUG3) << "Student scored: " << percentGrade;
   }
+  //close out the report so we can open it again later to add the final information
+  report.close();
 }
 
 double calMedian(float* scores, int cSize) {
@@ -169,7 +171,28 @@ double calMedian(float* scores, int cSize) {
   }
 
   //return the median
+  FILE_LOG(logINFO) << "Class median score is: " << median;
   return median;
+}
+
+double calMean(float* scores, int cSize) {
+  double totalPoints=0, mean=0;
+
+  FILE_LOG(logINFO) << "Now calculating class average";
+
+  for(int i=0; i<cSize; i++) {
+    totalPoints += *(scores+i);
+  }
+  
+  FILE_LOG(logDEBUG1) << "Total points: " << totalPoints;
+  FILE_LOG(logDEBUG1) << "Total students: " << cSize;
+
+  //divide by class size to get the class average
+  mean = totalPoints/cSize;
+  FILE_LOG(logINFO) << "Class average score is: " << mean;
+
+  //return the average
+  return mean;
 }
 
 int main(int argc, char** argv) {
@@ -195,7 +218,7 @@ int main(int argc, char** argv) {
   if(init(keyfile, examfile, key, ID, tests, grades, tSize, cSize)) {
     grade(ID, tests, key, reportfile, cSize, tSize, grades);
     median = calMedian(grades, cSize);
-    FILE_LOG(logINFO) << "Class median score is: " << median;
+    mean = calMean(grades, cSize);
   } else {
     FILE_LOG(logERROR) << "A load error occured, exiting...";
   }

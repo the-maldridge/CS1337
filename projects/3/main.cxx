@@ -5,6 +5,7 @@ Then spits out SSV grade report files
 */
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <string>
 #include <cctype>
@@ -15,7 +16,7 @@ Then spits out SSV grade report files
 //back to normal stuff
 using namespace std;
 
-bool init(string answers, string tests, char* &ansKey, int* &ID, char** &responses, int* &grades, int &tSize, int &cSize) {
+bool init(string answers, string tests, char* &ansKey, string* &ID, char** &responses, float* &grades, int &tSize, int &cSize) {
   ifstream key(answers.c_str());
   ifstream toGrade(tests.c_str());
   char* bounce = new char[1024];
@@ -44,7 +45,7 @@ bool init(string answers, string tests, char* &ansKey, int* &ID, char** &respons
     FILE_LOG(logINFO) << "The test file appears to have " << cSize << " tests";
 
     //build the array for IDs
-    ID = new int[cSize];
+    ID = new string[cSize];
 
     //build the array for responses
     responses = new char*[cSize];
@@ -75,29 +76,72 @@ bool init(string answers, string tests, char* &ansKey, int* &ID, char** &respons
     }
 
     //finally create the array for the scores
-    grades = new int[cSize];
+    grades = new float[cSize];
      
   } else {
     FILE_LOG(logERROR) << "A provided input file was invalid";
     return false;
   }
 }
-  
-int* grade(int* ID, char** tests, char* key, int* grades, string outfile, int cSize, int tSize) {
-  //grade the exams
 
-  for(int i=0; i<cSize; i++) {
-    FILE_LOG(logDEBUG1) << "Now grading student " << i+1;
-    char* student = *(tests+i); //copy single set of responses to pointer
-    for(int j=0; j<tSize; j++) {
-      if (toupper(*(student+j))==toupper(*(key+j))) {
-	FILE_LOG(logDEBUG2) << "Answer "<< j+1 << " was   correct (" << *(key+j) << ":" << *(student+j) << ")";
-      } else {
-	FILE_LOG(logDEBUG2) << "Answer "<< j+1 << " was incorrect (" << *(key+j) << ":" << *(student+j) << ")";
-      }
-    }
+char letterGrade(float percent) {
+  int lbracket = percent/10;
+
+  switch(lbracket) {
+  case 10:
+  case 9:
+    return 'A';
+  case 8:
+    return 'B';
+  case 7:
+    return 'C';
+  case 6:
+    return 'D';
+  default:
+    return 'F';
   }
 }
+  
+float* grade(string* ID, char** tests, char* key, string outfile, int cSize, int tSize) {
+  //grade the exams
+  ofstream report(outfile.c_str());
+
+  for(int i=0; i<cSize; i++) {
+    stringstream wrongNums, wrongAns, rightAns; //streams to put the report lines in
+    int wrong=0;
+
+    FILE_LOG(logDEBUG1) << "Now grading student " << i+1;
+    report << *(ID+i) <<endl; //output the ID number to the report
+    char* student = *(tests+i); //"copy" single set of responses to pointer
+
+    for(int j=0; j<tSize; j++) { //iterate over test answers
+      if (toupper(*(student+j))==toupper(*(key+j))) { //normalize and grade
+	//it was correct, put the answer in the log for debug purposes
+	FILE_LOG(logDEBUG2) << "Answer "<< j+1 << " was   correct (" << *(key+j) << ":" << *(student+j) << ")";
+      } else {
+	//it was wrong, add the info to the streams
+	FILE_LOG(logDEBUG2) << "Answer "<< j+1 << " was incorrect (" << *(key+j) << ":" << *(student+j) << ")";
+	wrongNums << setw(3) << right << j; //record which one was wrong
+	rightAns << setw(3) << right << *(key+j); //record the correct answer
+	wrongAns << setw(3) << right << *(student +j); //record the wrong answer
+	wrong++; //increment the number wrong
+      }
+    }
+    FILE_LOG(logDEBUG3) << wrong << " questions were missed"; //sanity check
+
+    float percentGrade = ((tSize-wrong)/static_cast<float>(tSize)) * 100; //calculate a percent
+    report << setprecision(2) << fixed << percentGrade << "  "; //output the number grade
+    report << setprecision(2) << fixed << letterGrade(percentGrade) << endl; //output the letter grade
+    //only add wrong answer info if they missed something
+    if(wrongNums.str().length()) {
+      report << wrongNums.str() << endl;
+      report << wrongAns.str() << endl;
+      report << rightAns.str() << endl;
+    } 
+    report << endl; //seperator between students
+  }
+}
+
 int main(int argc, char** argv) {
   //begin the logger
   FILELog::ReportingLevel() = FILELog::FromString(argv[1]?argv[1]:"DEBUG3");
@@ -105,9 +149,9 @@ int main(int argc, char** argv) {
 
   //init a place to store the test stuff
   char* key;
-  int* ID;
+  string* ID;
   char** tests;
-  int* grades;
+  float* grades;
   int cSize, tSize;
 
   //add some more variables for other stuff
@@ -118,7 +162,7 @@ int main(int argc, char** argv) {
   reportfile = "report.txt";
 
   if(init(keyfile, examfile, key, ID, tests, grades, tSize, cSize)) {
-    grades = grade(ID, tests, key, grades, reportfile, cSize, tSize);
+    grades = grade(ID, tests, key, reportfile, cSize, tSize);
   } else {
     FILE_LOG(logERROR) << "A load error occured, exiting...";
   }

@@ -195,6 +195,97 @@ double calMean(float* scores, int cSize) {
   return mean;
 }
 
+float* calMode(float* scores, int cSize) {
+  int currentMax=1, totalMax=1;
+
+  FILE_LOG(logINFO) << "Now calculating the modes";
+
+  //first sort the array
+  FILE_LOG(logDEBUG1) << "Attempting to sort";
+  float* scorestart = scores;
+  float* scoreend = scores+cSize;
+  sort(scorestart, scoreend);
+  FILE_LOG(logDEBUG1) << "Sort appears to have succeeded";
+
+  //find the largest mode
+  FILE_LOG(logDEBUG1) << "calculating the largest mode order";
+  for(int i=0; i<cSize-1; i++) {
+    if (*(scores+i) == *(scores+i+1)) {
+      currentMax++;
+      FILE_LOG(logDEBUG2) << "Current max order is: " << currentMax;
+      if(currentMax>totalMax) {
+	totalMax = currentMax;
+	FILE_LOG(logDEBUG3) << "replacing max order with: " << currentMax;
+      }
+    } else {
+      currentMax=0;
+    }
+  }
+
+  //find out how many times the largest mode occurs
+  int occurences = 0, modes = 0;
+  float last = *scores;
+
+  FILE_LOG(logDEBUG1) << "counting the number of modes to return";
+  for(int i=0; i<cSize; i++) {
+    if(*(scores+i) != last) {
+      last = *(scores+i);
+      occurences=0;
+    }
+    if(occurences == totalMax) {
+      modes++;
+    } else {
+      occurences++;
+    }
+  }
+  FILE_LOG(logDEBUG1) << "Found " << modes << " modes";
+
+  //store the found modes in an array for later return
+  float* scoreModes = new float[modes+1];
+  *(scoreModes+modes) = -1; //add a sentinel to know when we are out of modes later
+
+  occurences = 0;
+  int j = 0;
+  last = *scores;
+  
+  FILE_LOG(logDEBUG1) << "Now saving the mode(s)";
+  for(int i=0; i<cSize; i++) {
+    if(*(scores+i) != last) {
+      last = *(scores+i);
+      occurences=0;
+    }
+    if(occurences == totalMax) {
+      FILE_LOG(logDEBUG2) << "Saving mode: " << *(scores+i);
+      *(scoreModes+j) = *(scores+i);
+      j++;
+    } else {
+      occurences++;
+    }
+  }
+  return scoreModes;
+}
+
+void statisticsReport(double median, double mean, float* mode, string outfile) {
+  ofstream report(outfile.c_str(), ios::app);
+
+  FILE_LOG(logINFO) << "Appending statistics info to the report";
+
+  report << "Mean: " << setprecision(2) << fixed << mean << endl;
+  report << "Median: " << setprecision(2) << fixed << median << endl;
+  report << "Mode(s): ";
+
+  for(int i=0; *(mode+i)!=-1; i++) {
+    FILE_LOG(logDEBUG1) << "adding mode: " << *(mode + i);
+    report << *(mode+i) << " ";
+  }
+
+  //add the standards compliant line ending
+  report << endl;
+
+  //close the file and we are done
+  report.close();
+}
+
 int main(int argc, char** argv) {
   //begin the logger
   FILELog::ReportingLevel() = FILELog::FromString(argv[1]?argv[1]:"DEBUG3");
@@ -209,17 +300,28 @@ int main(int argc, char** argv) {
 
   //add some more variables for other stuff
   string keyfile, examfile, reportfile;
-  double mean, median, mode;
+  double mean, median;
+  float* modes;
 
+  //where is the data coming from and going to
   keyfile = "answers.txt";
   examfile = "exams.txt";
   reportfile = "report.txt";
 
   if(init(keyfile, examfile, key, ID, tests, grades, tSize, cSize)) {
+
+    //grade the tests
     grade(ID, tests, key, reportfile, cSize, tSize, grades);
+
+    //perform the statistical analysis
     median = calMedian(grades, cSize);
     mean = calMean(grades, cSize);
+    modes = calMode(grades, cSize);
+
+    //append the statistics results to the output file
+    statisticsReport(mean, median, modes, reportfile);
   } else {
+    //we couldn't load the inputs, log and die
     FILE_LOG(logERROR) << "A load error occured, exiting...";
   }
   return 0;

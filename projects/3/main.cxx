@@ -1,5 +1,5 @@
 /*
-Automatic exam grading program.
+Automatic exam grading program. -- Michael Aldridge
 It reads in SSV answer keys and student response files
 Then spits out SSV grade report files
 */
@@ -11,6 +11,7 @@ Then spits out SSV grade report files
 #include <cctype>
 #include <sstream>
 #include <algorithm>
+
 //pull in logging stuff
 #include "log.h"
 
@@ -24,6 +25,7 @@ bool init(string answers, string tests, char* &ansKey, string* &ID, char** &resp
   tSize=0; //length of the test
   cSize=0; //size of the class taking it
 
+  //only continue if the files linked correctly
   if(key && toGrade){
     key >> tSize; //find out how long the test was
     FILE_LOG(logINFO) << "Your selected key contains " << tSize << " answers.";
@@ -80,6 +82,7 @@ bool init(string answers, string tests, char* &ansKey, string* &ID, char** &resp
     grades = new float[cSize];
      
   } else {
+    //something went wrong linking the file, return false so we don't try to continue
     FILE_LOG(logERROR) << "A provided input file was invalid";
     return false;
   }
@@ -88,6 +91,7 @@ bool init(string answers, string tests, char* &ansKey, string* &ID, char** &resp
 char letterGrade(float percent) {
   int lbracket = percent/10;
 
+  //convert to a letter grade from a percent
   switch(lbracket) {
   case 10:
   case 9:
@@ -108,6 +112,7 @@ void grade(string* ID, char** tests, char* key, string outfile, int cSize, int t
   ofstream report(outfile.c_str());
 
   for(int i=0; i<cSize; i++) {
+    //iterate over students
     stringstream wrongNums, wrongAns, rightAns; //streams to put the report lines in
     int wrong=0;
 
@@ -122,17 +127,21 @@ void grade(string* ID, char** tests, char* key, string outfile, int cSize, int t
       } else {
 	//it was wrong, add the info to the streams
 	FILE_LOG(logDEBUG2) << "Answer "<< j+1 << " was incorrect (" << *(key+j) << ":" << *(student+j) << ")";
-	wrongNums << setw(3) << right << j; //record which one was wrong
-	rightAns << setw(3) << right << *(key+j); //record the correct answer
-	wrongAns << setw(3) << right << *(student +j); //record the wrong answer
+	wrongNums << setw(4) << right << j; //record which one was wrong
+	rightAns << setw(4) << right << *(key+j); //record the correct answer
+	wrongAns << setw(4) << right << *(student +j); //record the wrong answer
 	wrong++; //increment the number wrong
       }
     }
     FILE_LOG(logDEBUG3) << wrong << " questions were missed"; //sanity check
 
-    float percentGrade = ((tSize-wrong)/static_cast<float>(tSize)) * 100; //calculate a percent
-    report << setprecision(2) << fixed << percentGrade << "  "; //output the number grade
-    report << setprecision(2) << fixed << letterGrade(percentGrade) << endl; //output the letter grade
+    //calculate a percent
+    float percentGrade = ((tSize-wrong)/static_cast<float>(tSize)) * 100;
+
+    //put the percent and letter in the report
+    report << setprecision(2) << fixed << percentGrade << "  ";
+    report << setprecision(2) << fixed << letterGrade(percentGrade) << endl;
+
     //only add wrong answer info if they missed something
     if(wrongNums.str().length()) {
       report << wrongNums.str() << endl;
@@ -145,7 +154,7 @@ void grade(string* ID, char** tests, char* key, string outfile, int cSize, int t
     *(grades+i) = percentGrade;
     FILE_LOG(logDEBUG3) << "Student scored: " << percentGrade;
   }
-  //close out the report so we can open it again later to add the final information
+  //close out the report so we can open it again later to add the final statistics information
   report.close();
 }
 
@@ -180,10 +189,12 @@ double calMean(float* scores, int cSize) {
 
   FILE_LOG(logINFO) << "Now calculating class average";
 
+  //find the total points the class could have scored
   for(int i=0; i<cSize; i++) {
     totalPoints += *(scores+i);
   }
   
+  //debugs for sanity checks
   FILE_LOG(logDEBUG1) << "Total points: " << totalPoints;
   FILE_LOG(logDEBUG1) << "Total students: " << cSize;
 
@@ -226,6 +237,7 @@ float* calMode(float* scores, int cSize) {
   int occurences = 0, modes = 0;
   float last = *scores;
 
+  //work out how many modes need to be returned
   FILE_LOG(logDEBUG1) << "counting the number of modes to return";
   for(int i=0; i<cSize; i++) {
     if(*(scores+i) != last) {
@@ -263,6 +275,7 @@ float* calMode(float* scores, int cSize) {
     }
   }
 
+  //log what modes were saved
   stringstream modesSaved;
   for(int i=0; *(scoreModes+i)!=-1; i++) {
     modesSaved << *(scoreModes+i) << " ";
@@ -270,6 +283,7 @@ float* calMode(float* scores, int cSize) {
 
   FILE_LOG(logINFO) << "Saved mode(s): " << modesSaved.str();
 
+  //return the pointer to the array of modes
   return scoreModes;
 }
 
@@ -342,8 +356,7 @@ int main(int argc, char** argv) {
   delete [] tests;
   delete [] grades;
 
-
+  //log that we are done, and exit
   FILE_LOG(logINFO) << "Grading Complete";
-  //finally, exit
   return 0;
 }

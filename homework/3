@@ -1,0 +1,34 @@
+Michael Aldridge
+mwa130030
+
+10.5:
+do {
+   cin.clear();
+   bool isbad = false;
+   char choice;	
+   cout << "Re-run or quit (R/Q)" << endl;
+   cin >> choice;
+   choice=toupper(choice);
+   isbad = (!isalpha(choice) || choice!='R' || choice!='Q');
+} while(cin.bad() || isbad); //repeat if automagic typecasting occured
+
+10.10:
+#include <iostream>
+#include <cstring>
+#include <cstdlib>
+using namespace std;
+
+int main() {
+    char place[] = "The Windy City";
+    char srchstr[] = "Windy";
+
+    if(strstr(place, srchstr)) {
+    		     cout << "Windy Found!" << endl;
+	} else {
+	cout << "Windy not found." << endl;
+	}
+	return 0;
+}
+
+10.16:
+Dom Dalbert Dried Drains

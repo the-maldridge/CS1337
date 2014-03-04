@@ -332,5 +332,18 @@ int main(int argc, char** argv) {
     //we couldn't load the inputs, log and die
     FILE_LOG(logERROR) << "A load error occured, exiting...";
   }
+
+  //free up memory -- ignoring for now the fact that the OS does this for us...
+  delete [] key;
+  delete [] ID;
+  for(int i=0; i<cSize; i++) {
+    delete [] *(tests+i);
+  }
+  delete [] tests;
+  delete [] grades;
+
+
+  FILE_LOG(logINFO) << "Grading Complete";
+  //finally, exit
   return 0;
 }

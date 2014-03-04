@@ -110,6 +110,7 @@ char letterGrade(float percent) {
 void grade(string* ID, char** tests, char* key, string outfile, int cSize, int tSize, float* &grades) {
   //grade the exams
   ofstream report(outfile.c_str());
+  int outwidth=0;
 
   for(int i=0; i<cSize; i++) {
     //iterate over students
@@ -121,15 +122,17 @@ void grade(string* ID, char** tests, char* key, string outfile, int cSize, int t
     char* student = *(tests+i); //"copy" single set of responses to pointer
 
     for(int j=0; j<tSize; j++) { //iterate over test answers
+      outwidth=1;
       if (toupper(*(student+j))==toupper(*(key+j))) { //normalize and grade
 	//it was correct, put the answer in the log for debug purposes
 	FILE_LOG(logDEBUG2) << "Answer "<< j+1 << " was   correct (" << *(key+j) << ":" << *(student+j) << ")";
       } else {
 	//it was wrong, add the info to the streams
 	FILE_LOG(logDEBUG2) << "Answer "<< j+1 << " was incorrect (" << *(key+j) << ":" << *(student+j) << ")";
-	wrongNums << setw(4) << right << j; //record which one was wrong
-	rightAns << setw(4) << right << *(key+j); //record the correct answer
-	wrongAns << setw(4) << right << *(student +j); //record the wrong answer
+	outwidth=(j>1)?(3):(1); //figure out how many spaces to pad
+	wrongNums << setw(outwidth) << right << j+1; //record which one was wrong
+	rightAns << setw(outwidth) << right << *(key+j); //record the correct answer
+	wrongAns << setw(outwidth) << right << *(student +j); //record the wrong answer
 	wrong++; //increment the number wrong
       }
     }
@@ -163,20 +166,24 @@ double calMedian(float* scores, int cSize) {
 
   //create a new array that can be sorted
   float* scorestart = scores;
-  float* scoreend = scores+--cSize;
+  float* scoreend = scores+cSize-1;
   double median = 0;
 
   //use the sort function someone smarter than me wrote
   FILE_LOG(logDEBUG1) << "Attempting to sort scores";
   sort(scorestart, scoreend);
   FILE_LOG(logDEBUG1) << "Sort seems to have succeeded";
-
-  if(cSize%2==0) {
-    //there's an even number of students, average the 2 in the middle
-    median = (*(scores+cSize/2) + *(scores+(cSize/2-1)))/2.0f;
+  if(cSize==1) {
+    FILE_LOG(logDEBUG2) << "Class size of one, selecting default median";
+    median=*(scores);
   } else {
-    //the class is odd and we can just pick the middle number
-    median = *(scores +cSize/2);
+    if(cSize%2==0) {
+      //there's an even number of students, average the 2 in the middle
+      median = (*(scores+cSize/2) + *(scores+(cSize/2-1)))/2.0f;
+    } else {
+      //the class is odd and we can just pick the middle number
+      median = *(scores +cSize/2);
+    }
   }
 
   //return the median
@@ -207,84 +214,94 @@ double calMean(float* scores, int cSize) {
 }
 
 float* calMode(float* scores, int cSize) {
-  int currentMax=1, totalMax=1;
+  if(cSize==1) {
+    FILE_LOG(logDEBUG1) << "Harsha, this is an absurd test case...";
+    //we are in a weird test case, class of one, so select that
+    //score as the mode, this is an absurd case, but I'll code for it
+    float* scoreModes = new float[2];
+    *(scoreModes) = *(scores);
+    *(scoreModes+1) = -1;
+    return scoreModes;
+  } else {
+    int currentMax=1, totalMax=1;
 
-  FILE_LOG(logINFO) << "Now calculating the mode(s)";
+    FILE_LOG(logINFO) << "Now calculating the mode(s)";
 
-  //first sort the array
-  FILE_LOG(logDEBUG1) << "Attempting to sort";
-  float* scorestart = scores;
-  float* scoreend = scores+cSize;
-  sort(scorestart, scoreend);
-  FILE_LOG(logDEBUG1) << "Sort appears to have succeeded";
+    //first sort the array
+    FILE_LOG(logDEBUG1) << "Attempting to sort";
+    float* scorestart = scores;
+    float* scoreend = scores+cSize;
+    sort(scorestart, scoreend);
+    FILE_LOG(logDEBUG1) << "Sort appears to have succeeded";
 
-  //find the largest mode
-  FILE_LOG(logDEBUG1) << "calculating the largest mode order";
-  for(int i=0; i<cSize-1; i++) {
-    if (*(scores+i) == *(scores+i+1)) {
-      currentMax++;
-      FILE_LOG(logDEBUG2) << "Current max order is: " << currentMax;
-      if(currentMax>totalMax) {
-	totalMax = currentMax;
-	FILE_LOG(logDEBUG3) << "replacing max order with: " << currentMax;
+    //find the largest mode
+    FILE_LOG(logDEBUG1) << "calculating the largest mode order";
+    for(int i=0; i<cSize-1; i++) {
+      if (*(scores+i) == *(scores+i+1)) {
+	currentMax++;
+	FILE_LOG(logDEBUG2) << "Current max order is: " << currentMax;
+	if(currentMax>totalMax) {
+	  totalMax = currentMax;
+	  FILE_LOG(logDEBUG3) << "replacing max order with: " << currentMax;
+	}
+      } else {
+	currentMax=0;
       }
-    } else {
-      currentMax=0;
     }
-  }
 
-  //find out how many times the largest mode occurs
-  int occurences = 0, modes = 0;
-  float last = *scores;
+    //find out how many times the largest mode occurs
+    int occurences = 0, modes = 0;
+    float last = *scores;
 
-  //work out how many modes need to be returned
-  FILE_LOG(logDEBUG1) << "counting the number of modes to return";
-  for(int i=0; i<cSize; i++) {
-    if(*(scores+i) != last) {
-      last = *(scores+i);
-      occurences=0;
+    //work out how many modes need to be returned
+    FILE_LOG(logDEBUG1) << "counting the number of modes to return";
+    for(int i=0; i<cSize; i++) {
+      if(*(scores+i) != last) {
+	last = *(scores+i);
+	occurences=0;
+      }
+      if(occurences == totalMax) {
+	modes++;
+      } else {
+	occurences++;
+      }
     }
-    if(occurences == totalMax) {
-      modes++;
-    } else {
-      occurences++;
-    }
-  }
-  FILE_LOG(logDEBUG1) << "Found " << modes << " modes";
+    FILE_LOG(logDEBUG1) << "Found " << modes << " modes";
 
-  //store the found modes in an array for later return
-  float* scoreModes = new float[modes+1];
-  *(scoreModes+modes) = -1; //add a sentinel to know when we are out of modes later
+    //store the found modes in an array for later return
+    float* scoreModes = new float[modes+1];
+    *(scoreModes+modes) = -1; //add a sentinel to know when we are out of modes later
 
-  occurences = 0;
-  int j = 0;
-  last = *scores;
+    occurences = 0;
+    int j = 0;
+    last = *scores;
   
-  FILE_LOG(logDEBUG1) << "Now saving the mode(s)";
-  for(int i=0; i<cSize; i++) {
-    if(*(scores+i) != last) {
-      last = *(scores+i);
-      occurences=0;
+    FILE_LOG(logDEBUG1) << "Now saving the mode(s)";
+    for(int i=0; i<cSize; i++) {
+      if(*(scores+i) != last) {
+	last = *(scores+i);
+	occurences=0;
+      }
+      if(occurences == totalMax) {
+	FILE_LOG(logDEBUG2) << "Saving mode: " << *(scores+i);
+	*(scoreModes+j) = *(scores+i);
+	j++;
+      } else {
+	occurences++;
+      }
     }
-    if(occurences == totalMax) {
-      FILE_LOG(logDEBUG2) << "Saving mode: " << *(scores+i);
-      *(scoreModes+j) = *(scores+i);
-      j++;
-    } else {
-      occurences++;
+
+    //log what modes were saved
+    stringstream modesSaved;
+    for(int i=0; *(scoreModes+i)!=-1; i++) {
+      modesSaved << *(scoreModes+i) << " ";
     }
+
+    FILE_LOG(logINFO) << "Saved mode(s): " << modesSaved.str();
+
+    //return the pointer to the array of modes
+    return scoreModes;
   }
-
-  //log what modes were saved
-  stringstream modesSaved;
-  for(int i=0; *(scoreModes+i)!=-1; i++) {
-    modesSaved << *(scoreModes+i) << " ";
-  }
-
-  FILE_LOG(logINFO) << "Saved mode(s): " << modesSaved.str();
-
-  //return the pointer to the array of modes
-  return scoreModes;
 }
 
 void statisticsReport(double median, double mean, float* mode, string outfile) {

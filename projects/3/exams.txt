@@ -1,1 +1,1 @@
-sampleData/exams.txt
+sampleData/exams2.txt

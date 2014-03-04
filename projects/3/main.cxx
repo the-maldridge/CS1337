@@ -171,7 +171,7 @@ double calMedian(float* scores, int cSize) {
   }
 
   //return the median
-  FILE_LOG(logINFO) << "Class median score is: " << median;
+  FILE_LOG(logINFO) << "Class median score is: " << setprecision(2) << fixed << median;
   return median;
 }
 
@@ -189,7 +189,7 @@ double calMean(float* scores, int cSize) {
 
   //divide by class size to get the class average
   mean = totalPoints/cSize;
-  FILE_LOG(logINFO) << "Class average score is: " << mean;
+  FILE_LOG(logINFO) << "Class average score is: " << setprecision(2) << fixed << mean;
 
   //return the average
   return mean;
@@ -198,7 +198,7 @@ double calMean(float* scores, int cSize) {
 float* calMode(float* scores, int cSize) {
   int currentMax=1, totalMax=1;
 
-  FILE_LOG(logINFO) << "Now calculating the modes";
+  FILE_LOG(logINFO) << "Now calculating the mode(s)";
 
   //first sort the array
   FILE_LOG(logDEBUG1) << "Attempting to sort";
@@ -262,6 +262,14 @@ float* calMode(float* scores, int cSize) {
       occurences++;
     }
   }
+
+  stringstream modesSaved;
+  for(int i=0; *(scoreModes+i)!=-1; i++) {
+    modesSaved << *(scoreModes+i) << " ";
+  }
+
+  FILE_LOG(logINFO) << "Saved mode(s): " << modesSaved.str();
+
   return scoreModes;
 }
 
@@ -288,7 +296,7 @@ void statisticsReport(double median, double mean, float* mode, string outfile) {
 
 int main(int argc, char** argv) {
   //begin the logger
-  FILELog::ReportingLevel() = FILELog::FromString(argv[1]?argv[1]:"DEBUG3");
+  FILELog::ReportingLevel() = FILELog::FromString(argv[1]?argv[1]:"INFO");
   FILE_LOG(logDEBUG) << "Program Start";
 
   //init a place to store the test stuff

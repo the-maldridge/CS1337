@@ -328,7 +328,7 @@ int main(int argc, char** argv) {
   //where is the data coming from and going to
   keyfile = "answers.txt";
   examfile = "exams.txt";
-  reportfile = "report.txt";
+  reportfile = "exam_report.txt";
 
   if(init(keyfile, examfile, key, ID, tests, grades, tSize, cSize)) {
 

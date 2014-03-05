@@ -1,9 +1,9 @@
 1234567
-97.00  A
- 14 55 96
-  B  B  B
-  A  A  A
+96.00  A
+1 14 55 96 
+B  B  B  B 
+A  A  A  A 
 
-Mean: 97.00
-Median: 97.00
-Mode(s): 97.00 
+Mean: 96.00
+Median: 96.00
+Mode(s): 96.00 

@@ -129,10 +129,10 @@ void grade(string* ID, char** tests, char* key, string outfile, int cSize, int t
       } else {
 	//it was wrong, add the info to the streams
 	FILE_LOG(logDEBUG2) << "Answer "<< j+1 << " was incorrect (" << *(key+j) << ":" << *(student+j) << ")";
-	outwidth=(j>1)?(3):(1); //figure out how many spaces to pad
-	wrongNums << setw(outwidth) << right << j+1; //record which one was wrong
-	rightAns << setw(outwidth) << right << *(key+j); //record the correct answer
-	wrongAns << setw(outwidth) << right << *(student +j); //record the wrong answer
+	outwidth=(j>1)?(2):(1); //figure out how many spaces to pad
+	wrongNums << setw(outwidth) << right << j+1<< " "; //record which one was wrong
+	rightAns << setw(outwidth) << right << *(key+j) << " "; //record the correct answer
+	wrongAns << setw(outwidth) << right << *(student +j) << " "; //record the wrong answer
 	wrong++; //increment the number wrong
       }
     }

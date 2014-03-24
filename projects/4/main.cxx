@@ -13,6 +13,7 @@ using namespace std;
 
 
 enum menuAction {VIEW=1, ADD, DELETE, SEARCH, REPORT, QUIT};
+enum searchAction {FIND, EDITREMOVE};
 struct dbrecord {
   string id;
   string desc;
@@ -147,9 +148,118 @@ void dumpdb(vector<dbrecord> &db, int i) {
     cout << "----------EOR----------" << endl;
 }
 
+bool uniqueID(vector<dbrecord> db, string id) {
+  bool match=false;
+  for(int i=0; i<db.size(); i++) {
+    match=false;
+    for(int j=0; j<7; j++) {
+      if(db[i].id.c_str()[j]==id.c_str()[j]) {
+	match=true;
+      } else {
+	match=false;
+	break;
+      }
+    }
+    if(match) {
+      //id was not unique
+      cerr << "Primary key collision!" << endl;
+      return false;
+    }
+  }
+  //we went through the entire array and the id was unique
+  return true;
+}
+
+void addRecord(vector<dbrecord> &db) {
+  dbrecord temp;
+
+  cout << "Add a record:" << endl;
+  cout << "Directions for input are provided for each step, if the" << endl;
+  cout << "prompt appears a second point, your input did not satisfy" << endl;
+  cout << "one or more parameters for the given option." << endl << endl;
+
+  do {
+    cout << "Input an id of 3 letters followed by 4 numbers: ";
+    cin >> temp.id;
+  } while(!valID(temp.id) || !uniqueID(db, temp.id));
+
+  cout << "Input a brief description of the item: " << endl;
+  cin.ignore(1,'\n');
+  getline(cin, temp.desc);
+
+  do {
+    cout << "How many items are in inventory now: ";
+    cin >> temp.quantity;
+  } while(temp.quantity<0);
+
+  do {
+    cout << "The wholesale cost may not exceed $100." << endl;
+    cout << "The retail markup may not exceed %75." << endl;
+    cout << "What is the wholesale cost: ";
+    cin >> temp.wCost;
+    cout << "What is the retail cost: ";
+    cin >> temp.rCost;
+  } while(!valCost(temp.rCost, temp.wCost));
+
+  db.push_back(temp);
+}
+
+bool sortCompID(const dbrecord &a, const dbrecord &b) {
+  return (a.id<b.id)?true:false;
+}
+
+void save(vector<dbrecord> db, string fname) {
+  if(db.size()>0){
+
+    cout << "Ordering output..." << endl;
+    sort(db.begin(), db.end(), sortCompID);
+    fstream disk(fname.c_str(), ios::trunc | ios::out);
+
+    cout << "Writing data to disk..." << endl;
+    for(int i=0; i<db.size(); i++) {
+      disk << db[i].id << endl;
+      disk << db[i].desc << endl;
+      disk << db[i].quantity << endl;
+      disk << db[i].wCost << endl;
+      disk << db[i].rCost << endl;
+      disk << endl;
+    }
+
+    disk.close();
+    cout << "Finished saving to disk" << endl;
+  } else {
+    cout << "Database of zero length, NOT SAVING!" << endl;
+  }
+}
+
+int searchRecord(vector<dbrecord> &db, searchAction mode) {
+  string id;
+  int recordLoc=0;
+  bool found=false;
+
+  cout << "Input your ID query: ";
+  cin >> id;
+
+  for(; recordLoc<db.size(); recordLoc++) {
+    if(db[recordLoc].id==id) {
+      found=true;
+      dumpdb(db, recordLoc);
+    }
+  }
+
+  if(!found) {
+    cerr << "Your query returned 0 results." << endl;
+  } else if(mode==EDITREMOVE) {
+    return recordLoc;
+  }
+}
+
+void deleteRecord(vector<dbrecord> &db, int recordLoc) {}
+      
 int main() {
   menuAction action;
   vector<dbrecord> database;
+  int loc;
 
   if(init("inventory.dat", database)) {
     while(true) {
@@ -158,14 +268,18 @@ int main() {
 	dumpdb(database);
 	break;
       case ADD:
+	addRecord(database);
 	break;
       case DELETE:
+	loc=searchRecord(database, EDITREMOVE);
 	break;
       case SEARCH:
+	searchRecord(database, FIND);
 	break;
       case REPORT:
 	break;
       case QUIT:
+	save(database, "inventory.dat");
 	cout << "Exiting..." << endl;
 	return 0;
       }

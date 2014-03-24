@@ -12,7 +12,7 @@ Revenge of the database, need I say more?
 using namespace std;
 
 
-enum menuAction {VIEW, ADD, DELETE, SEARCH, REPORT, QUIT};
+enum menuAction {VIEW=1, ADD, DELETE, SEARCH, REPORT, QUIT};
 struct dbrecord {
   string id;
   string desc;
@@ -93,6 +93,58 @@ bool init(string fname, vector<dbrecord> &db) {
       }
     }
   }
+
+  cout << "Finished loading database!" << endl << endl;
+}
+
+menuAction mainMenu() {
+  int choice;
+
+  cout << "MAIN MENU" << endl;
+  cout << endl << endl;
+
+  cout << "1. View entire database" << endl;
+  cout << "2. Add a record" << endl;
+  cout << "3. Delete a record" << endl;
+  cout << "4. Search for a record" << endl;
+  cout << "5. Generate an inventory report" << endl;
+  cout << "6. Quit" << endl;
+
+  cout << endl;
+
+  cout << "Input your selection: ";
+  cin >> choice;
+
+  while(choice<1 || choice>6) {
+    cout << "Your selection was invalid!" << endl;
+    cout << "Input a valid choice: ";
+    cin >> choice;
+  }
+
+  return static_cast<menuAction>(choice);
+}
+
+void dumpdb(vector<dbrecord> &db) {
+  cout << "The database currently contains the following:" << endl;
+  for(int i=0; i<db.size(); i++) {
+    cout << "----------BOR----------" << endl;
+    cout << "ID: " << db[i].id << endl;
+    cout << "Description: " << db[i].desc << endl;
+    cout << "Quantity on hand" << db[i].quantity << endl;
+    cout << "Wholesale Cost: " << db[i].wCost << endl;
+    cout << "Retail Cost: " << db[i].rCost << endl;
+    cout << "----------EOR----------" << endl;
+  }
+}
+
+void dumpdb(vector<dbrecord> &db, int i) {
+    cout << "----------BOR----------" << endl;
+    cout << "ID: " << db[i].id << endl;
+    cout << "Description: " << db[i].desc << endl;
+    cout << "Quantity on hand" << db[i].quantity << endl;
+    cout << "Wholesale Cost: " << db[i].wCost << endl;
+    cout << "Retail Cost: " << db[i].rCost << endl;
+    cout << "----------EOR----------" << endl;
 }
 
 int main() {
@@ -100,23 +152,25 @@ int main() {
   vector<dbrecord> database;
 
   if(init("inventory.dat", database)) {
-    switch(action) {
-    case VIEW:
-      break;
-    case ADD:
-      break;
-    case DELETE:
-      break;
-    case SEARCH:
-      break;
-    case REPORT:
-      break;
-    case QUIT:
-      cout.flush();
-      return 0;
+    while(true) {
+      switch(mainMenu()) {
+      case VIEW:
+	dumpdb(database);
+	break;
+      case ADD:
+	break;
+      case DELETE:
+	break;
+      case SEARCH:
+	break;
+      case REPORT:
+	break;
+      case QUIT:
+	cout << "Exiting..." << endl;
+	return 0;
+      }
     }
   } else {
-    cout.flush();
     return 1;
   }
 }

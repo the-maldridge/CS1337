@@ -236,6 +236,7 @@ int searchRecord(vector<dbrecord> &db, searchAction mode) {
   string id;
   int recordLoc=0;
   bool found=false;
+  char choice;
 
   cout << "Input your ID query: ";
   cin >> id;
@@ -250,11 +251,24 @@ int searchRecord(vector<dbrecord> &db, searchAction mode) {
   if(!found) {
     cerr << "Your query returned 0 results." << endl;
   } else if(mode==EDITREMOVE) {
-    return recordLoc;
+    do {
+      cout << "Are you SURE you want to delete the record above? [y/n]: ";
+      cin >> choice;
+    } while(toupper(choice) != 'Y' && toupper(choice)!='N');
+    if(toupper(choice)=='Y') {
+      cout << "Deleting record with id " << db[recordLoc].id << endl;
+      return recordLoc;
+    } else {
+      cout << "Delete cancelled, record preserved" << endl;
+      return -1;
+    }
   }
+  else return -1;
 }
 
-void deleteRecord(vector<dbrecord> &db, int recordLoc) {}
+void deleteRecord(vector<dbrecord> &db, int recordLoc) {
+  db.erase(db.begin()+recordLoc);
+}
       
 int main() {
   menuAction action;
@@ -272,6 +286,10 @@ int main() {
 	break;
       case DELETE:
 	loc=searchRecord(database, EDITREMOVE);
+	cout << "location: " << loc << endl;
+	if(loc!=-1) {
+	  deleteRecord(database, loc);
+	}
 	break;
       case SEARCH:
 	searchRecord(database, FIND);

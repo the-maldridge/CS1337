@@ -245,6 +245,7 @@ int searchRecord(vector<dbrecord> &db, searchAction mode) {
     if(db[recordLoc].id==id) {
       found=true;
       dumpdb(db, recordLoc);
+      break;
     }
   }
 
@@ -269,7 +270,24 @@ int searchRecord(vector<dbrecord> &db, searchAction mode) {
 void deleteRecord(vector<dbrecord> &db, int recordLoc) {
   db.erase(db.begin()+recordLoc);
 }
+
+void inventoryReport(vector<dbrecord> db) {
+  int items = 0;
+  float wholesale = 0, retail = 0;
+
+  for(int i=0; i<db.size(); i++) {
+    items += db[i].quantity;
+    wholesale += db[i].quantity * db[i].wCost;
+    retail += db[i].quantity * db[i].rCost;
+  }
+
+  cout << "Report is as follows:" << endl;
+  cout << "Total number of items in inventory: " << items << endl;
+  cout << "Total wholesale value: " << wholesale << endl;
+  cout << "Total retail value: " << retail << endl;
       
+}
+
 int main() {
   menuAction action;
   vector<dbrecord> database;
@@ -295,6 +313,7 @@ int main() {
 	searchRecord(database, FIND);
 	break;
       case REPORT:
+	inventoryReport(database);
 	break;
       case QUIT:
 	save(database, "inventory.dat");

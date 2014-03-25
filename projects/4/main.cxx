@@ -131,7 +131,7 @@ void dumpdb(vector<dbrecord> &db) {
     cout << "----------BOR----------" << endl;
     cout << "ID: " << db[i].id << endl;
     cout << "Description: " << db[i].desc << endl;
-    cout << "Quantity on hand" << db[i].quantity << endl;
+    cout << "Quantity on hand: " << db[i].quantity << endl;
     cout << "Wholesale Cost: " << db[i].wCost << endl;
     cout << "Retail Cost: " << db[i].rCost << endl;
     cout << "----------EOR----------" << endl;
@@ -142,7 +142,7 @@ void dumpdb(vector<dbrecord> &db, int i) {
     cout << "----------BOR----------" << endl;
     cout << "ID: " << db[i].id << endl;
     cout << "Description: " << db[i].desc << endl;
-    cout << "Quantity on hand" << db[i].quantity << endl;
+    cout << "Quantity on hand: " << db[i].quantity << endl;
     cout << "Wholesale Cost: " << db[i].wCost << endl;
     cout << "Retail Cost: " << db[i].rCost << endl;
     cout << "----------EOR----------" << endl;
@@ -238,19 +238,26 @@ int searchRecord(vector<dbrecord> &db, searchAction mode) {
   bool found=false;
   char choice;
 
-  cout << "Input your ID query: ";
+  cout << "Input your query: ";
   cin >> id;
 
   for(; recordLoc<db.size(); recordLoc++) {
-    if(db[recordLoc].id==id) {
-      found=true;
-      dumpdb(db, recordLoc);
-      break;
+    if(mode==EDITREMOVE) {
+      if(db[recordLoc].id==id) {
+	found=true;
+	dumpdb(db, recordLoc);
+	break;
+      }
+    } else if(mode==FIND) {
+      if((db[recordLoc].id==id) || (db[recordLoc].desc.find(id)!=string::npos)) {
+	dumpdb(db, recordLoc);
+      }
     }
   }
 
   if(!found) {
     cerr << "Your query returned 0 results." << endl;
+    return -1;
   } else if(mode==EDITREMOVE) {
     do {
       cout << "Are you SURE you want to delete the record above? [y/n]: ";
@@ -304,7 +311,6 @@ int main() {
 	break;
       case DELETE:
 	loc=searchRecord(database, EDITREMOVE);
-	cout << "location: " << loc << endl;
 	if(loc!=-1) {
 	  deleteRecord(database, loc);
 	}

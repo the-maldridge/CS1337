@@ -16,7 +16,7 @@ Questions:
 #include <iomanip>
 #include <cctype>
 #include <cmath>
-#include <stack>
+#include <queue>
 using namespace std;
 
 
@@ -88,7 +88,7 @@ bool valCost(float rCost, float wCost) {
     cerr <<"\tNet loss cost analysis" << endl;
     return false;
   }
-  if((abs(wCost/rCost))>0.75) {
+  if((abs(rCost/wCost)-1)>0.75) {
     //the markup is invalid
     cerr << "\tInvalid markup "<< (wCost/rCost) << endl;
     return false;
@@ -279,8 +279,8 @@ void save(vector<dbrecord> db, string fname) {
     disk << db[i].id << endl;
     disk << db[i].desc << endl;
     disk << db[i].quantity << endl;
-    disk << db[i].wCost << endl;
-    disk << db[i].rCost << endl;
+    disk << setprecision(2) << fixed << db[i].wCost << endl;
+    disk << setprecision(2) << fixed << db[i].rCost << endl;
     disk << endl;
   }
   
@@ -380,7 +380,7 @@ void inventoryReport(vector<dbrecord> db) {
 }
 
 void editRecord(vector<dbrecord> &db, int loc) {
-  stack<int> choice;
+  queue<int> choice;
   int bounce;
 
   //find out what they want to edit
@@ -407,56 +407,53 @@ void editRecord(vector<dbrecord> &db, int loc) {
 
   //perform the requested operations
   do {
-    switch(choice.top()) {
+    switch(choice.front()) {
     case 1:
       //edit the description
       cout << "The current description is:" << endl;
       cout << db[loc].desc << endl;
       cout << "Please enter new description:" << endl;
-      cin.ignore(1, '\n');
       getline(cin, db[loc].desc);
       break;
     case 2:
       //edit the quantity
       cout << "The current quantity is: " << db[loc].quantity << endl;
       cout << "Input new quantity: ";
-      cin.ignore(1, '\n');
       cin >> db[loc].quantity;
       break;
-    case 4:
+    case 3:
       //edit the wholesale cost
       cout << "The wholesale cost is $" << db[loc].wCost << endl;
       cout << "Enter new wholesale cost: ";
-      cin.ignore(1, '\n');
       cin >> db[loc].wCost;
 
       //validate the cost
-      if(valCost(db[loc].wCost, db[loc].rCost)) {
+      if(valCost(db[loc].rCost, db[loc].wCost)) {
 	cout << "Costs valid" << endl;
 	break;
       } else {
 	cout << "You must now change the retail cost" << endl;
-	choice.push(5);
+	choice.push(4);
 	break;
       }
-    case 5:
+    case 4:
       //edit the retail cost
       cout << "The retail cost is $" << db[loc].rCost << endl;
       cout << "Enter new retail cost: ";
-      cin.ignore(1, '\n');
       cin >> db[loc].rCost;
       
-      if(valCost(db[loc].wCost, db[loc].rCost)) {
+      if(valCost(db[loc].rCost, db[loc].wCost)) {
 	cout << "Costs valid" << endl;
 	break;
       } else {
 	cout << "You must now change the wholesale cost" << endl;
-	choice.push(4);
+	choice.push(3);
 	break;
       }
     }
     choice.pop();
-  } while(!choice.empty());
+    cout << choice.size() << endl;
+  } while(choice.size());
 }
 
 int main() {

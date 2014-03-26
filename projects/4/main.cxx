@@ -30,6 +30,10 @@ struct dbrecord {
   float rCost;
 };
 
+string normalize(string s) {
+  transform(s.begin(), s.end(), s.begin(), ::toupper);
+  return s;
+}
 
 bool valID(string id) {
   //check if it has the right number of letters
@@ -121,6 +125,9 @@ bool init(string fname, vector<dbrecord> &db) {
       disk >> temp.wCost;
       disk >> temp.rCost;
       disk >> ws;
+
+      //fix any IDs coming in from disk
+      temp.id = normalize(temp.id);
 
       //validate the incomming record
       if(valID(temp.id) && valCost(temp.rCost, temp.wCost)) {
@@ -228,6 +235,9 @@ void addRecord(vector<dbrecord> &db) {
     cin >> temp.id;
   } while(!valID(temp.id) || !uniqueID(db, temp.id));
 
+  //normalize the ID
+  temp.id = normalize(temp.id);
+
   cout << "Input a brief description of the item: " << endl;
   cin.ignore(1,'\n');
   getline(cin, temp.desc);
@@ -287,6 +297,9 @@ int searchRecord(vector<dbrecord> &db, searchAction mode) {
   cout << "Input your query: ";
   cin >> id;
 
+  //normalize the ID
+  id = normalize(id);
+
   for(; recordLoc<db.size(); recordLoc++) {
     if(mode==REMOVE) {
       if(db[recordLoc].id==id) {
@@ -303,6 +316,7 @@ int searchRecord(vector<dbrecord> &db, searchAction mode) {
     } else if(mode==FIND) {
       if((db[recordLoc].id==id) || (db[recordLoc].desc.find(id)!=string::npos)) {
 	dumpdb(db, recordLoc);
+	found=true;
       }
     }
   }
@@ -385,6 +399,7 @@ void editRecord(vector<dbrecord> &db, int loc) {
     cerr << "INVALID INPUT" << endl;
     cout << "Input a valid choice: ";
     cin >> bounce;
+    cin.ignore(1,'\n');
   }
 
   //add the option to the stack
@@ -398,19 +413,21 @@ void editRecord(vector<dbrecord> &db, int loc) {
       cout << "The current description is:" << endl;
       cout << db[loc].desc << endl;
       cout << "Please enter new description:" << endl;
-      cin.ignore(1,'\n');
+      cin.ignore(1, '\n');
       getline(cin, db[loc].desc);
       break;
     case 2:
       //edit the quantity
       cout << "The current quantity is: " << db[loc].quantity << endl;
       cout << "Input new quantity: ";
+      cin.ignore(1, '\n');
       cin >> db[loc].quantity;
       break;
     case 4:
       //edit the wholesale cost
       cout << "The wholesale cost is $" << db[loc].wCost << endl;
       cout << "Enter new wholesale cost: ";
+      cin.ignore(1, '\n');
       cin >> db[loc].wCost;
 
       //validate the cost
@@ -426,6 +443,7 @@ void editRecord(vector<dbrecord> &db, int loc) {
       //edit the retail cost
       cout << "The retail cost is $" << db[loc].rCost << endl;
       cout << "Enter new retail cost: ";
+      cin.ignore(1, '\n');
       cin >> db[loc].rCost;
       
       if(valCost(db[loc].wCost, db[loc].rCost)) {

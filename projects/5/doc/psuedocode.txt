@@ -1,0 +1,89 @@
+Michael Aldridge
+mwa130030
+
+Basic Program Flow:
+  init
+  read in the infix
+  convert to postfix
+  write the postfix to file
+  perform the calculation
+  write the result to a file
+  exit
+
+
+Init case:
+  open the file
+  add each "thing" in the file to the stack
+  close the file and return the stack pointer
+
+convert to postfix (use algorithm in the project guidelines):
+  When an operand is encountered, append it to the postfix expression 
+  When ( is encountered, push it onto the stack 
+  When an operator is encountered 
+    Pop the stack (appending to postfix expression) until an operator of lower precedence is on top of the stack or the stack is empty/ 
+      *, / have a lower precedence than ^ 
+      +, - have lower precedence than *, / 
+      ( has lower precedence than +, - 
+    Push the operator 
+  When ‘)’ is encountered, pop the stack (appending each element popped to postfix expression) until ‘(‘ is encountered in stack 
+    Pop ( but don’t add to postfix array 
+  When end of input is reached, pop the stack (appending to postfix expression) until stack is empty
+
+write postfix to file:
+  copy the postfix stack
+  pop each element into a string
+  open file
+  write string to file
+  close file
+  return
+
+perform calculation:
+  pop element into num1
+  pop element into num2
+  pop operator and push result back onto the stack
+    the operator will be caught by a function to convert from sentinel values to operators
+    the operator will be evaluated in a switch()
+  repeat as necessary
+
+write result to file:
+  open output file in append mode
+  write the result
+  close the file
+
+
+implementation of stack:
+  will be on top of a doubly linked list
+  constructor:
+    will create a private backing list
+    bind this class to that list instance
+  destructor:
+    call the backing list destructor 
+  stack::top():
+    will return the top element of the stack instance
+  stack::pop():
+    will remove the top element from the stack
+  stack::push():
+    will push an element onto the top of the stack
+    effectively calling an add_front on the list
+
+implementation of list:
+  will be a doubly linked list
+  constructor:
+    will create a single node and bind the top to it
+    list will be of type int
+  destructor:
+    iterate backwards from the end of the list killing nodes
+    remove the head node
+    destruction finished
+  list::add_pos():
+    will create one node
+    add it to the given position in the list
+    will repoint the pointers to link the list
+  list::get_pos():
+    walk down the pointer tree to a point
+    return the value at that point
+  list::remove_pos():
+    get the node up and down pointers
+    repoint the list around the now dead node
+    call the dead node's destructor
+    

@@ -1,0 +1,6 @@
+#include <iostream>
+#include "linkedlist.h"
+
+LinkList::LinkList() {
+  head = NULL;
+}

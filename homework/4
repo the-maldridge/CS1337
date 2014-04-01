@@ -1,0 +1,17 @@
+Michael Aldridge
+mwa130030
+
+Homework 4
+
+13.27:  A problem domain is a collection of real world objects and items that integrate into the problem.
+13.28:  Typically, the lead engineer writes out the problem domain.
+13.29:  To identify the potential classes, list out all the nouns in the problem description, and then convert the list of nouns into classes, and then refine the list.
+13.30:  A classes responsibilities are the things it must know about and the actions it must do.
+13.31:  "What must a class know?" and "What must the class do?"
+13.32:  No, some of the things the classes must know may be calculated dynamically.
+13.33.A: Doctor, Patient, Procedures, Office Manager
+13.33.B: Patient, Procedures, Office Manager
+13.33.C: Patient: Must know what procedures were done, billing info, address, and other meta-data such as name etc.
+         Procedures: Knows the fee of each procedure.
+	 Office Manager: Computes fee and produces statement from multuple procedures put in.  Tabulates and produces the final report.
+

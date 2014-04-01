@@ -1,0 +1,67 @@
+Michael Aldridge
+mwa130030
+
+pg789-791
+
+73:  there is no constructor
+     private and public need a : after them
+
+74:  the shift operators on cout/cin are reversed
+     the class contains no constructor for the weight
+     in the current implementatino the moon weight isn't calculated
+     
+75:  this class contains no constructor
+     the weight variable is private and can't be directly accessed
+     there is no way to instantiate the class
+
+76:  no errrors
+
+pg791:
+
+header file:
+#ifndef date_included
+#define date_included
+class Date {
+  private:
+    int month, day, year;
+    enum dPart {MONTH, YEAR, DAY);
+    enum monName {"JANUARY"=1, "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"}
+  public:
+    Date();
+    Date(int, int, int);
+    void coerceToRange(int, dPart);
+    string getSlashFormat();
+    string getNormFormat();
+    string getGovFormat();
+};
+
+cxx file:
+#include date.h
+#include <string>
+#include <iostream>
+
+void Date::coerceToRange(int val, dPart type) {
+  switch(type) {
+  case DAY:
+    if(val=>31) { return 31; }
+    if(val<0) { return 1; }
+    break;
+  case MONTH:
+    if(val=>12) { return 12; }
+    if(val<1) { return 1; }
+  case YEAR:
+    break;
+  }
+}
+
+void Date::getSlashFormat() {
+  cout << month << "/" << day << "/" << year << endl;
+}
+
+void Date::getNormFormat() {
+  cout << static_cast<monName>(month) << " " << day << ", " << year;
+}
+
+void Date::getGovFormat() {
+  cout << day << " " << static_cast<monName>(month) << " " year << endl;
+}

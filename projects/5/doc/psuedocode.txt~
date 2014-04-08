@@ -1,0 +1,30 @@
+Michael Aldridge
+mwa130030
+
+Basic Program Flow:
+  init
+  read in the infix
+  convert to postfix
+  write the postfix to file
+  perform the calculation
+  write the result to a file
+  exit
+
+
+Init case:
+  open the file
+  add each "thing" in the file to the stack
+  close the file and return the stack pointer
+
+convert to postfix (use algorithm in the project guidelines):
+  When an operand is encountered, append it to the postfix expression 
+  When ( is encountered, push it onto the stack 
+  When an operator is encountered 
+    Pop the stack (appending to postfix expression) until an operator of lower precedence is on top of the stack or the stack is empty/ 
+      *, / have a lower precedence than ^ 
+      +, - have lower precedence than *, / 
+      ( has lower precedence than +, - 
+    Push the operator 
+  When ‘)’ is encountered, pop the stack (appending each element popped to postfix expression) until ‘(‘ is encountered in stack 
+    Pop ( but don’t add to postfix array 
+  When end of input is reached, pop the stack (appending to postfix expression) until stack is empty

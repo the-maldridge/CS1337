@@ -1,0 +1,27 @@
+Michael Aldridge
+mwa130030
+
+#13: A reference to a class object is passed to the operator=.
+#14: It should not be implemented as void, because then A=B=C would not function
+     correctly.
+#15: Postfix mode for ++ is identified by a dummy parameter of type int.
+#16: The this pointer is a special pointer pointing to the class instance that
+     called it.
+#17: An overloaded relational operator should return type bool.
+#18: copy, overloaded, overloaded, overloaded
+#19: In order to make a member variable static, preface it with "static".
+#20: In order to make a member function static, preface it with "static".
+#21: 2 each of x and y exist, with one of z.
+     x and y will each contain whatever was in z, random if z isn't initialized.
+     Thing::putThing(0);
+#22: In the case of object aggregation, one class exists as a member of another
+     and no additional access exists for that class.  In the case of a friend
+     of a class it allows the direct access to all private variables of the
+     class to the friend.
+#23: Forward declaring a class tells the compiler it is a type, so it can be
+     referenced, but it isn't necessary to fully know the structure.
+#24: Pointer members can be used to dynamically allocate memory.  In this case
+     memberwise assignment would copy the pointer, but wouldn't allocate the
+     memory that existed in the first object.
+#25: When passed by value, the only function containing code to handle all
+     variables in the class is the copy constructor.

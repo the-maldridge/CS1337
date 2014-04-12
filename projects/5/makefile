@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -Wall -Wextra
 LDFLAGS=
-SOURCES=main.cxx item.cxx stack.cxx
+SOURCES=main.cxx
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=calculator
 

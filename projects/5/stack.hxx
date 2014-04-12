@@ -10,7 +10,7 @@ public:
   Stack();
   ~Stack();
 
-  void push(nodeData_t);
+  void push(NodeData);
   void purge();
   Item pop();
   Item peek();

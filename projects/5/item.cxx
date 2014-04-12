@@ -7,13 +7,13 @@ Item::Item() {
   data.payload.num = 0;
 }
 
-Item::Item(nodeData_t incoming) {
+Item::Item(NodeData incoming) {
   data = incoming;
 }
 
 Item::~Item() {}
 
-nodeData_t Item::retrieveData() {
+NodeData Item::retrieveData() {
   return data;
 
 }

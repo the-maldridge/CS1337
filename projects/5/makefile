@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-Wall -Wextra
 MAINFILE=main.cxx
-OBJECTFILE=item.cxx stack.cxx
+OBJECTFILE=item.cxx stack.cxx eqMan.cxx
 EXECNAME=calculator
 
 all: objects main
@@ -15,3 +15,5 @@ objects:
 clean:
 	rm -rf $(EXECNAME)
 	rm -rf $(OBJECTFILE:.cxx=.o)
+test:
+	./$(EXECNAME)

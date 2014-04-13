@@ -1,5 +1,7 @@
 //backing item node class for the stack
 
+#ifndef ITEM_H
+#define ITEM_H
 
 #include <string>
 #include <cstddef>
@@ -17,3 +19,4 @@ public:
   void setNext(Item*);
   Item* getNext();
 };
+#endif

@@ -4,7 +4,7 @@
 #include <iostream>
 
 int main() {
-  std::string foo = "4+5*9-25*(32^2)";
+  std::string foo = "4+5*9-25*(32^2)+4";
   Tokenizer test(foo);
   std::cout << test.tokenize() << std::endl;
   std::cout << "This is the end" << std::endl;

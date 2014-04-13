@@ -14,6 +14,6 @@ objects:
 
 clean:
 	rm -rf $(EXECNAME)
-	rm -rf $(OBJECTFILE:.cxx=.o)
+	rm -rf *.o *.cxx~ *.hxx~
 test:
 	./$(EXECNAME)

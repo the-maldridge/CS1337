@@ -1,17 +1,17 @@
 CC=g++
-CFLAGS=-c -Wall -Wextra
-LDFLAGS=
-SOURCES=main.cxx
-OBJECTS=$(SOURCES:.cpp=.o)
-EXECUTABLE=calculator
+CFLAGS=-Wall -Wextra
+MAINFILE=main.cxx
+OBJECTFILE=item.cxx stack.cxx
+EXECNAME=calculator
 
-all: $(SOURCES) $(EXECUTABLE)
-	
-$(EXECUTABLE): $(OBJECTS) 
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+all: objects main
 
-.cpp.o:
-	$(CC) $(CFLAGS) $< -o $@
+main: objects
+	$(CC) $(CFLAGS) $(MAINFILE) -o $(EXECNAME) $(OBJECTFILE:.cxx=.o)
+
+objects:
+	$(CC) -c $(CFLAGS) $(OBJECTFILE)
 
 clean:
-	rm -rf $(EXECUTABLE)
+	rm -rf $(EXECNAME)
+	rm -rf $(OBJECTFILE:.cxx=.o)

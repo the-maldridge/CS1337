@@ -22,13 +22,21 @@ int main() {
       inputExpressions.push_back(temp);
     }
   }
+  file.close();
+
+  std::ofstream out("values.txt");
 
   //evaluate the expressions
   for(int i = 0; i<static_cast<int>(inputExpressions.size()); i++) {
     Queue<QType> funcQ = tokenize(inputExpressions[i]);
-    std:: cout << funcQ.printQ() << '\t';
-    std::cout << evaluate(funcQ) << std::endl;
+    std::cout << funcQ.printQ() << '\t' << evaluate(funcQ) << std::endl;
+    out << funcQ.printQ() << '\t' << evaluate(funcQ) << std::endl;
   }
+
+  //sync out the finished equations
+  out.close();
+
+  //exit with success message
   std::cout << "Calculation Successful!" << std::endl;
   return 0;
 }

@@ -93,7 +93,7 @@ T Queue<T>::dq() {
   if(head != NULL) {
     head = head->getNext();
     T data = oldHead->getData();
-    delete oldHead;
+    //delete oldHead;
     return data;
   } else {
     std::cerr << "TRIED TO GET NULL PTR" << std::endl;

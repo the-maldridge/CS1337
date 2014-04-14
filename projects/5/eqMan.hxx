@@ -4,6 +4,11 @@
 #include <string>
 #include <cctype>
 #include "stack.hxx"
+#include "queue.hxx"
+
+union Data {int num; char op;};
+enum Type {OPERAND, OPERATOR};
+struct QType {Type type; Data dat;};
 
 class Tokenizer {
 private:
@@ -15,7 +20,7 @@ public:
   Tokenizer(std::string);
   ~Tokenizer();
 
-  std::string tokenize();
+  Queue<QType> tokenize();
 };
 
 class Evaluator {

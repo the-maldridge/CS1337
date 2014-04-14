@@ -5,7 +5,6 @@ and the evaluator, these two functions make up the RPN calculator
 
 // Begin the Tokenizer!
 #include "eqMan.hxx"
-#include <iostream>
 
 Tokenizer::Tokenizer(std::string in) {
   input = in;
@@ -34,8 +33,23 @@ int Tokenizer::getOpPriority(char op) {
   }
 }
 
-std::string Tokenizer::tokenize() {
+QType toQ(double n) {
+  QType temp;
+  temp.type = OPERAND;
+  temp.dat.num = n;
+  return temp;
+}
+
+QType toQ(char c) {
+  QType temp;
+  temp.type = OPERATOR;
+  temp.dat.op = c;
+  return temp;
+}
+
+Queue<QType> Tokenizer::tokenize() {
   char inQ, lastQ;
+  Queue<QType> outQ;
 
   for(int i=0; input.c_str()[i] != 0; i++) {
     lastQ = inQ;
@@ -52,12 +66,20 @@ std::string Tokenizer::tokenize() {
       //pop until lower precidence is encountered
       while(getOpPriority(opStack.top()) > getOpPriority(inQ)) {
 	if(opStack.top() == '(') {
+	  opStack.pop();
 	  break;
 	}
 	output += opStack.top();
 	output += " ";
 	opStack.pop();
       }
+
+      if(getOpPriority(opStack.top()) == getOpPriority(inQ)) {
+	output += opStack.top();
+	output += " ";
+	opStack.pop();
+      }      
+
       opStack.push(inQ);
     } else if(inQ == ')') {
       if(isdigit(lastQ)) {
@@ -76,14 +98,10 @@ std::string Tokenizer::tokenize() {
       }
     }
   }
-  if(!isdigit(lastQ)) {
-    output += " ";
-  }
   while(opStack.top()) {
-    output += opStack.top();
-    output += " ";
+    outQ.nq(toQ(opStack.top()));
     opStack.pop();
-  }
-  return output;
+    }
+  return outQ;
 }
 

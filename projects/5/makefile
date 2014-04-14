@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-Wall -Wextra
 MAINFILE=main.cxx
-OBJECTFILE=item.cxx stack.cxx eqMan.cxx
+OBJECTFILE=item.cxx stack.cxx eqMan.cxx queue.cxx
 EXECNAME=calculator
 
 all: objects main

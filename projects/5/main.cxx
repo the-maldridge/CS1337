@@ -4,9 +4,8 @@
 #include <iostream>
 
 int main() {
-  std::string foo = "4+5*9-25*(32^2)+4";
+  std::string foo = "(2+3)*5-4^2+35^(3/3*(4-2*3))";
   Tokenizer test(foo);
-  std::cout << test.tokenize() << std::endl;
   std::cout << "This is the end" << std::endl;
   return 0;
 }

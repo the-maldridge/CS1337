@@ -25,16 +25,13 @@ int main() {
 
   //evaluate the expressions
   for(int i = 0; i<static_cast<int>(inputExpressions.size()); i++) {
-    std::cout << "Beginning Tokenization" << std::endl;
     Tokenizer test(inputExpressions[i]);
-    std::cout << "Tokenizing..." << std::endl;
     Queue<QType> funcQ = test.tokenize();
-    std::cout << funcQ.printQ() << std::endl;
-    std::cout << "Instantiating evaluator" << std::endl;
+    funcQ.printQ();
+    std::cout << '\t';
     Evaluator eval(funcQ);
-    std::cout << "Evaluating..." << std::endl;
-    eval.evaluate();
-    std::cout << "This is the end" << std::endl;
+    std::cout << eval.evaluate() << std::endl;
   }
+  std::cout << "Calculation Successful!" << std::endl;
   return 0;
 }

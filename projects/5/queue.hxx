@@ -72,14 +72,7 @@ Queue<T>::Queue() {
 }
 
 template<typename T>
-Queue<T>::~Queue() {
-  //QNode<T>* delNext;
-  //while(head != NULL) {
-  //  delNext = head->getNext();
-  //  delete head;
-  //  head = delNext;
-  //}
-}
+Queue<T>::~Queue() {}
 
 template<typename T>
 void Queue<T>::nq(T toQ) {
@@ -96,7 +89,6 @@ void Queue<T>::nq(T toQ) {
 template<typename T>
 T Queue<T>::dq() {
   QNode<T>* oldHead = head;
-  std::cout << oldHead << std::endl;
   
   if(head != NULL) {
     if(head == tail) {
@@ -119,7 +111,7 @@ template<typename T>
 std::string Queue<T>::printQ() {
   std::stringstream out;
   QNode<QType>* temp = head;
-
+  
   while(temp != NULL) {
     if(temp->getData().type == OPERATOR) {
       std::cout << temp->getData().dat.op << ' ';
@@ -128,7 +120,7 @@ std::string Queue<T>::printQ() {
     }
     temp = temp->getNext();
   }
- 
+  
   return out.str();
 }
 #endif

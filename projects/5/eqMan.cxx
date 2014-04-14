@@ -62,7 +62,7 @@ QType getToken(const char* str, const char** out) {
       num = num * 10 + *str - '0';
       ++str;
     }
-    item = toQ((double)num);
+    item = toQ(static_cast<double>(num));
   } else {
     item = toQ(*str);
     str++;

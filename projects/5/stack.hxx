@@ -28,7 +28,7 @@ Stack<T>::Stack() {
 
 template<typename T>
 Stack<T>::~Stack() {
-  //purge();
+  purge();
 }
 
 template<typename T>

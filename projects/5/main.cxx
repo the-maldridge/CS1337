@@ -27,8 +27,7 @@ int main() {
   for(int i = 0; i<static_cast<int>(inputExpressions.size()); i++) {
     Tokenizer test(inputExpressions[i]);
     Queue<QType> funcQ = test.tokenize();
-    funcQ.printQ();
-    std::cout << '\t';
+    std:: cout << funcQ.printQ() << '\t';
     Evaluator eval(funcQ);
     std::cout << eval.evaluate() << std::endl;
   }

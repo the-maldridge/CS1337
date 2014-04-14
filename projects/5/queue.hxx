@@ -3,7 +3,6 @@
 #include <sstream>
 #include "types.hxx"
 
-
 //the nodes in the queue
 #ifndef QNODE_H
 #define QNODE_H
@@ -91,11 +90,13 @@ T Queue<T>::dq() {
   QNode<T>* oldHead = head;
   
   if(head != NULL) {
-    if(head == tail) {
-      tail = tail->getNext();
-    }
+    //if(head == tail) {
+    //tail = tail->getNext();
+    //}
     head = head->getNext();
-    return oldHead->getData();
+    T data = oldHead->getData();
+    //delete oldHead;
+    return data;
   } else {
     std::cerr << "TRIED TO GET NULL PTR" << std::endl;
     throw new int(5);
@@ -114,9 +115,11 @@ std::string Queue<T>::printQ() {
   
   while(temp != NULL) {
     if(temp->getData().type == OPERATOR) {
-      std::cout << temp->getData().dat.op << ' ';
+      out << temp->getData().dat.op;
+      out << ' ';
     } else if(temp->getData().type == OPERAND) {
-      std::cout << temp->getData().dat.num << ' ';
+      out << temp->getData().dat.num;
+      out << ' ';
     }
     temp = temp->getNext();
   }

@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-Wall -Wextra
+CFLAGS=-Wall -Wextra -O0 -g
 MAINFILE=main.cxx
 OBJECTFILE=eqMan.cxx
 EXECNAME=calculator

@@ -2,21 +2,49 @@
 
 #ifndef ITEM_H
 #define ITEM_H
-
-#include <string>
 #include <cstddef>
 
+template<typename T>
 class Item {
 private:
-  Item* next;
-  char data;
+  Item<T>* next;
+  T data;
 public:
-  Item(char);
+  Item(T);
   ~Item();
 
-  void setOp(char);
-  char getOp();
-  void setNext(Item*);
-  Item* getNext();
+  void setOp(T);
+  T getOp();
+  void setNext(Item<T>*);
+  Item<T>* getNext();
 };
+
+template<typename T>
+Item<T>::Item(T c) {
+  data = c;
+  next = NULL;
+}
+
+template<typename T>
+Item<T>::~Item() {}
+
+template<typename T>
+void Item<T>::setOp(T c) {
+  data = c;
+}
+
+template<typename T>
+T Item<T>::getOp() {
+  return data;
+}
+
+template<typename T>
+void Item<T>::setNext(Item<T>* p) {
+  next = p;
+}
+
+template<typename T>
+Item<T>* Item<T>::getNext() {
+  return next;
+}
 #endif

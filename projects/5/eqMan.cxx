@@ -5,6 +5,7 @@ and the evaluator, these two functions make up the RPN calculator
 
 // Begin the Tokenizer!
 #include "eqMan.hxx"
+#include <cstdlib>
 
 Tokenizer::Tokenizer(std::string in) {
   input = in;
@@ -24,7 +25,8 @@ int Tokenizer::getOpPriority(char op) {
   case '^':
     return 3;
   case '(':
-    return 4;
+  case ')':
+    return 0;
   case '\0':
     return -1;
   default:
@@ -47,61 +49,158 @@ QType toQ(char c) {
   return temp;
 }
 
+QType getToken(const char* str, const char** out) {
+  while(*str == ' ') {
+    ++str;
+  }
+
+  QType item;
+
+  if(isdigit(*str)) {
+    int num = 0;
+    while(isdigit(*str)) {
+      num = num * 10 + *str - '0';
+      ++str;
+    }
+    item = toQ((double)num);
+  } else {
+    item = toQ(*str);
+    str++;
+  }
+
+  *out = str;
+  return item;
+}
+
 Queue<QType> Tokenizer::tokenize() {
-  char inQ, lastQ;
   Queue<QType> outQ;
+  const char* str = input.c_str(); //for speed
 
-  for(int i=0; input.c_str()[i] != 0; i++) {
-    lastQ = inQ;
-    inQ = input.c_str()[i];
-    if(isdigit(inQ)) {
-      // If the character was a digit, append it
-      output += input.c_str()[i];
-    } else if(inQ != ')') {
-      if(inQ != '(') {
-	output += " ";
-      }
+  std::cout << (int)'+' << ' ' << (int)'-' << ' ' <<
+    (int)'*' << ' ' << (int)'/' << ' ' << (int)'^' << std::endl;
 
-      //its not a ) so it must be an op
-      //pop until lower precidence is encountered
-      while(getOpPriority(opStack.top()) > getOpPriority(inQ)) {
-	if(opStack.top() == '(') {
+  for(; *str != 0;) {
+    std::cout << str << std::endl;
+    QType inQ = getToken(str, &str);
+    std::cout << "!!!" << inQ.type << std::endl;
+
+    if(inQ.type == OPERAND) {
+      std::cout << "push'd" << std::endl;
+      outQ.nq(inQ);
+    } else if(inQ.type == OPERATOR) {
+      if(inQ.dat.op == '(') {
+	opStack.push(inQ);
+      } else if(inQ.dat.op == ')') {
+	while(opStack.top().dat.op != '(') {
+	  std::cout << "loop" << opStack.top().dat.op << std::endl;
+	  outQ.nq(opStack.top());
+	  std::cout << "nq'd " << opStack.top().type << std::endl;
 	  opStack.pop();
-	  break;
+	  std::cout << "???" << std::endl;
 	}
-	output += opStack.top();
-	output += " ";
+	std::cout << "oh hey; you made it " << opStack.top().dat.op << std::endl;
 	opStack.pop();
-      }
-
-      if(getOpPriority(opStack.top()) == getOpPriority(inQ)) {
-	output += opStack.top();
-	output += " ";
-	opStack.pop();
-      }      
-
-      opStack.push(inQ);
-    } else if(inQ == ')') {
-      if(isdigit(lastQ)) {
-	output += " ";
-      }
-      while(opStack.top()) {
-	// Pop until we hit a left paren
-	if(opStack.top() != '(') {
-	  output += opStack.top();
-	  output += " ";
+      } else {
+	std::cout << "in the probable place" << std::endl;
+	while(!opStack.empty() &&
+	      getOpPriority(inQ.dat.op) <= getOpPriority(opStack.top().dat.op)) {
+	  outQ.nq(opStack.top());
+	  std::cout << "###nq'd" << opStack.top().type << std::endl;
 	  opStack.pop();
-	} else {
-	  opStack.pop();
-	  break;
 	}
+	opStack.push(inQ);
+	std::cout << "out the probable place" << std::endl;
       }
+    } else {
+      std::cout << "damnit michael version 2" << std::endl;
     }
   }
-  while(opStack.top()) {
-    outQ.nq(toQ(opStack.top()));
+  while(!opStack.empty()) {
+    outQ.nq(opStack.top());
+    std::cout << "###nq'd" << opStack.top().type << std::endl;
     opStack.pop();
-    }
+  }
   return outQ;
+}
+
+Evaluator::Evaluator(Queue<QType> toEval) {
+  input = toEval;
+}
+
+Evaluator::~Evaluator() {}
+
+double Evaluator::evaluate() {
+  Stack<double> evalStack; //shadowing!
+  while(!input.isEmpty()) {
+    std::cout << "beep" << std::endl;
+    QType temp = input.dq();
+    std::cout << "TYPE " << temp.type << std::endl;
+
+    switch(temp.type) {
+    case OPERAND:
+      std::cout << "OPERAND " << temp.dat.num << std::endl;
+      evalStack.push(temp.dat.num);
+      break;
+    case OPERATOR:
+      std::cout << "OPERATOR " << temp.dat.op << std::endl;
+      switch(temp.dat.op) {
+      case '+': {
+	double op1, op2;
+	op2 = evalStack.top();
+	evalStack.pop();
+	op1 = evalStack.top();
+	evalStack.pop();
+	evalStack.push(op1+op2);
+	break;
+      }
+      case '-': {
+	double op1, op2;
+	op2 = evalStack.top();
+	evalStack.pop();
+	op1 = evalStack.top();
+	evalStack.pop();
+	evalStack.push(op1-op2);
+	break;
+      }
+      case '*': {
+	double op1, op2;
+	op2 = evalStack.top();
+	evalStack.pop();
+	op1 = evalStack.top();
+	evalStack.pop();
+	evalStack.push(op1*op2);
+	break;
+      }
+      case '/': {
+	double op1, op2;
+	op2 = evalStack.top();
+	evalStack.pop();
+	op1 = evalStack.top();
+	evalStack.pop();
+	evalStack.push(op1/op2);
+	break;
+      }
+      case '^': {
+	double op1, op2;
+	op2 = evalStack.top();
+	evalStack.pop();
+	op1 = evalStack.top();
+	evalStack.pop();
+	evalStack.push(pow(op1,op2));
+	break;
+      }
+      default:
+	std::cerr << "YOU HAVE DONE SOMETHING HORRIBLY WRONG" << std::endl;
+	break;
+      }
+      break;
+    default:
+      std::cerr << "damnit michael" << std::endl;
+      break;
+    }
+  }
+
+  std::cout << evalStack.top() << std::endl;
+  return evalStack.top();
 }
 

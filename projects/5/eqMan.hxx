@@ -3,18 +3,16 @@
 
 #include <string>
 #include <cctype>
+#include <cmath>
 #include "stack.hxx"
 #include "queue.hxx"
-
-union Data {int num; char op;};
-enum Type {OPERAND, OPERATOR};
-struct QType {Type type; Data dat;};
+#include "types.hxx"
 
 class Tokenizer {
 private:
   std::string input;
   std::string output;
-  Stack opStack;
+  Stack<QType> opStack;
   int getOpPriority(char);
 public:
   Tokenizer(std::string);
@@ -25,14 +23,14 @@ public:
 
 class Evaluator {
 private:
-  std::string input;
-  Stack evalStack;
+  Queue<QType> input;
+  Stack<double> evalStack;
   int left, right;
-  float out;
+  double out;
 public:
-  Evaluator();
+  Evaluator(Queue<QType>);
   ~Evaluator();
 
-  float evaluate();
+  double evaluate();
 };
 #endif

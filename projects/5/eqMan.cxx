@@ -7,13 +7,7 @@ and the evaluator, these two functions make up the RPN calculator
 #include "eqMan.hxx"
 #include <cstdlib>
 
-Tokenizer::Tokenizer(std::string in) {
-  input = in;
-}
-
-Tokenizer::~Tokenizer() {}
-
-int Tokenizer::getOpPriority(char op) {
+int getOpPriority(char op) {
   // Compute the precidence of the operator
   switch(op) {
   case '+':
@@ -72,11 +66,12 @@ QType getToken(const char* str, const char** out) {
   return item;
 }
 
-Queue<QType> Tokenizer::tokenize() {
+Queue<QType> tokenize(std::string input) {
+  Stack<QType> opStack;
   Queue<QType> outQ;
   const char* str = input.c_str(); //for speed
 
-  for(; *str != 0;) {
+  while(*str != 0) {
     QType inQ = getToken(str, &str);
 
     if(inQ.type == OPERAND) {
@@ -109,13 +104,7 @@ Queue<QType> Tokenizer::tokenize() {
   return outQ;
 }
 
-Evaluator::Evaluator(Queue<QType> toEval) {
-  input = toEval;
-}
-
-Evaluator::~Evaluator() {}
-
-double Evaluator::evaluate() {
+double evaluate(Queue<QType> input) {
   Stack<double> evalStack; //shadowing!
   while(!input.isEmpty()) {
     QType temp = input.dq();

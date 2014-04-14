@@ -8,29 +8,10 @@
 #include "queue.hxx"
 #include "types.hxx"
 
-class Tokenizer {
-private:
-  std::string input;
-  std::string output;
-  Stack<QType> opStack;
-  int getOpPriority(char);
-public:
-  Tokenizer(std::string);
-  ~Tokenizer();
+//Tokenizer converts to postfix
+Queue<QType> tokenize(std::string);
 
-  Queue<QType> tokenize();
-};
+//Evaluator performs calculations on postfix
+double evaluate(Queue<QType>);
 
-class Evaluator {
-private:
-  Queue<QType> input;
-  Stack<double> evalStack;
-  int left, right;
-  double out;
-public:
-  Evaluator(Queue<QType>);
-  ~Evaluator();
-
-  double evaluate();
-};
 #endif

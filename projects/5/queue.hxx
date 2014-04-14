@@ -22,6 +22,7 @@ public:
 
 template<typename T>
 QNode<T>::QNode(T datum) {
+  next = NULL;
   data = datum;
 }
 
@@ -90,12 +91,9 @@ T Queue<T>::dq() {
   QNode<T>* oldHead = head;
   
   if(head != NULL) {
-    //if(head == tail) {
-    //tail = tail->getNext();
-    //}
     head = head->getNext();
     T data = oldHead->getData();
-    //delete oldHead;
+    delete oldHead;
     return data;
   } else {
     std::cerr << "TRIED TO GET NULL PTR" << std::endl;

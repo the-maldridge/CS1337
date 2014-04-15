@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <vector>
 
 int main() {
@@ -29,8 +30,11 @@ int main() {
   //evaluate the expressions
   for(int i = 0; i<static_cast<int>(inputExpressions.size()); i++) {
     Queue<QType> funcQ = tokenize(inputExpressions[i]);
-    std::cout << funcQ.printQ() << '\t' << evaluate(funcQ) << std::endl;
-    out << funcQ.printQ() << '\t' << evaluate(funcQ) << std::endl;
+    std::stringstream result;
+    result << funcQ.printQ();
+    result << '\t' << evaluate(funcQ);
+    std::cout << result.str() << std::endl;
+    out << result.str() << std::endl;
   }
 
   //sync out the finished equations

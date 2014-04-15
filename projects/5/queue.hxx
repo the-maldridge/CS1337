@@ -60,7 +60,7 @@ public:
   ~Queue();
 
   void nq(T);
-  T dq();  
+  T dq();
   bool isEmpty();
   std::string printQ();
 };
@@ -72,7 +72,15 @@ Queue<T>::Queue() {
 }
 
 template<typename T>
-Queue<T>::~Queue() {}
+Queue<T>::~Queue() {
+  //delete every remaining node
+  QNode<T>* node = head;
+  while(node != NULL) {
+    QNode<T>* next = node->getNext();
+    delete node;
+    node = next;
+  }
+}
 
 template<typename T>
 void Queue<T>::nq(T toQ) {
@@ -88,12 +96,12 @@ void Queue<T>::nq(T toQ) {
 
 template<typename T>
 T Queue<T>::dq() {
-  QNode<T>* oldHead = head;
-  
   if(head != NULL) {
+    T data = head->getData();
+    QNode<T>* oldHead = head;
     head = head->getNext();
-    T data = oldHead->getData();
-    //delete oldHead;
+    //delete the node that is now unreachable
+    delete oldHead;
     return data;
   } else {
     std::cerr << "TRIED TO GET NULL PTR" << std::endl;
@@ -112,6 +120,7 @@ std::string Queue<T>::printQ() {
   QNode<QType>* temp = head;
   
   while(temp != NULL) {
+    //do the printing
     if(temp->getData().type == OPERATOR) {
       out << temp->getData().dat.op;
       out << ' ';
@@ -119,6 +128,8 @@ std::string Queue<T>::printQ() {
       out << temp->getData().dat.num;
       out << ' ';
     }
+
+    //next node
     temp = temp->getNext();
   }
   

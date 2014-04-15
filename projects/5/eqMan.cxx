@@ -126,8 +126,7 @@ Queue<QType> tokenize(std::string input) {
   return outQ;
 }
 
-double evaluate(Queue<QType> input) {
-  //we need to shadow here for arcane reasons
+double evaluate(Queue<QType>& input) {
   Stack<double> evalStack;
 
   //process while there are things to process

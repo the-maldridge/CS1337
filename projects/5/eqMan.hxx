@@ -12,6 +12,6 @@
 Queue<QType> tokenize(std::string);
 
 //Evaluator performs calculations on postfix
-double evaluate(Queue<QType>);
+double evaluate(Queue<QType>&);
 
 #endif

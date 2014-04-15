@@ -2,6 +2,7 @@
 #include "eqMan.hxx"
 #include <string>
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <sstream>
 #include <vector>
@@ -32,7 +33,7 @@ int main() {
     Queue<QType> funcQ = tokenize(inputExpressions[i]);
     std::stringstream result;
     result << funcQ.printQ();
-    result << '\t' << evaluate(funcQ);
+    result << '\t' << std::setprecision(3) << std::fixed << evaluate(funcQ);
     std::cout << result.str() << std::endl;
     out << result.str() << std::endl;
   }

@@ -1,0 +1,27 @@
+Michael Aldridge
+mwa130030
+April 17, 2014
+
+
+#ifndef MONTH_H
+#define MONTH_H
+class Month {
+private:
+	string name;
+	int monthNumber;
+public:
+	Month();
+	Month(string);
+	Month(int);
+	string getName();
+	void setName(string);
+	int getMonthNumber();
+	void setMonthNumber();
+
+	void operator++();
+	void operator++(int);
+
+	void operator--();
+	void operator--(int);
+};
+#endif

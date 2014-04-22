@@ -25,3 +25,350 @@ public:
 	void operator--(int);
 };
 #endif
+
+Month::Month() {
+	       name = "January";
+	       monthNumber = 1;
+}
+
+Month::Month(string monthName) {
+name = monthName;
+switch(monthName) {
+		  case "January":
+		       monthNumber = 1;
+		       break;
+		  case "February":
+		       monthNumber = 2;
+		       break;
+		  case "March":
+		       monthNumber = 3;
+		       break;
+		  case "April":
+		       monthNumber = 4;
+		       break;
+		  case "May":
+		       monthNumber = 5;
+		       break;
+		  case "June":
+		       monthNumber = 6;
+		       break;
+		  case "July":
+		       monthNumber = 7;
+		       break;
+		  case "August":
+		       monthNumber = 8;
+		       break;
+		  case "September":
+		       monthNumber = 9;
+		       break;
+		  case "October":
+		       monthNumber = 10;
+		       break;
+		  case "November":
+		       monthNumber = 11;
+		       break;
+		  case "December":
+		       monthNumber = 12;
+		       break;
+}
+}
+
+Month::Month(int num) {
+	 monthNumber = num;
+	 switch(num) {
+		 case 1:
+		 	name = "January";
+			break;
+		 case 2:
+		 	name = "February";
+			break;
+		 case 3:
+		 	name = "March";
+			break;
+		 case 4:
+		 	name = "April";
+			break;
+		 case 5:
+		 	name = "May";
+			break;
+		 case 6:
+		 	name = "June";
+			break;
+		 case 7:
+		 	name = "July";
+			break;
+		 case 8:
+		 	name = "August";
+			break;
+		 case 9:
+		 	name = "September";
+			break;
+		 case 10:
+		 	name = "October";
+			break;
+		 case 11:
+		 	name = "November";
+			break;
+		 case 12:
+		 	name = "December";
+			break;
+	}
+}
+
+string Month::getName() {
+       return name;
+}
+
+int Month::getMonthNumber() {
+    return monthNumber;
+}
+
+void setMonthNumber(int num) {
+     	monthNumber = num;
+	 switch(num) {
+		 case 1:
+		 	name = "January";
+			break;
+		 case 2:
+		 	name = "February";
+			break;
+		 case 3:
+		 	name = "March";
+			break;
+		 case 4:
+		 	name = "April";
+			break;
+		 case 5:
+		 	name = "May";
+			break;
+		 case 6:
+		 	name = "June";
+			break;
+		 case 7:
+		 	name = "July";
+			break;
+		 case 8:
+		 	name = "August";
+			break;
+		 case 9:
+		 	name = "September";
+			break;
+		 case 10:
+		 	name = "October";
+			break;
+		 case 11:
+		 	name = "November";
+			break;
+		 case 12:
+		 	name = "December";
+			break;
+	}
+}
+
+void Month::setName(string n) {
+     name = n;
+     switch(monthName) {
+		  case "January":
+		       monthNumber = 1;
+		       break;
+		  case "February":
+		       monthNumber = 2;
+		       break;
+		  case "March":
+		       monthNumber = 3;
+		       break;
+		  case "April":
+		       monthNumber = 4;
+		       break;
+		  case "May":
+		       monthNumber = 5;
+		       break;
+		  case "June":
+		       monthNumber = 6;
+		       break;
+		  case "July":
+		       monthNumber = 7;
+		       break;
+		  case "August":
+		       monthNumber = 8;
+		       break;
+		  case "September":
+		       monthNumber = 9;
+		       break;
+		  case "October":
+		       monthNumber = 10;
+		       break;
+		  case "November":
+		       monthNumber = 11;
+		       break;
+		  case "December":
+		       monthNumber = 12;
+		       break;
+	}
+}
+
+void Month::operator++() {
+     monthNumber++;
+	 switch(monthNumber) {
+		 case 1:
+		 	name = "January";
+			break;
+		 case 2:
+		 	name = "February";
+			break;
+		 case 3:
+		 	name = "March";
+			break;
+		 case 4:
+		 	name = "April";
+			break;
+		 case 5:
+		 	name = "May";
+			break;
+		 case 6:
+		 	name = "June";
+			break;
+		 case 7:
+		 	name = "July";
+			break;
+		 case 8:
+		 	name = "August";
+			break;
+		 case 9:
+		 	name = "September";
+			break;
+		 case 10:
+		 	name = "October";
+			break;
+		 case 11:
+		 	name = "November";
+			break;
+		 case 12:
+		 	name = "December";
+			break;
+	}
+}
+
+void Month::operator++(int) {
+     monthNumber++;
+	 switch(monthNumber) {
+		 case 1:
+		 	name = "January";
+			break;
+		 case 2:
+		 	name = "February";
+			break;
+		 case 3:
+		 	name = "March";
+			break;
+		 case 4:
+		 	name = "April";
+			break;
+		 case 5:
+		 	name = "May";
+			break;
+		 case 6:
+		 	name = "June";
+			break;
+		 case 7:
+		 	name = "July";
+			break;
+		 case 8:
+		 	name = "August";
+			break;
+		 case 9:
+		 	name = "September";
+			break;
+		 case 10:
+		 	name = "October";
+			break;
+		 case 11:
+		 	name = "November";
+			break;
+		 case 12:
+		 	name = "December";
+			break;
+	}
+}void Month::operator--() {
+     monthNumber--;
+	 switch(monthNumber) {
+		 case 1:
+		 	name = "January";
+			break;
+		 case 2:
+		 	name = "February";
+			break;
+		 case 3:
+		 	name = "March";
+			break;
+		 case 4:
+		 	name = "April";
+			break;
+		 case 5:
+		 	name = "May";
+			break;
+		 case 6:
+		 	name = "June";
+			break;
+		 case 7:
+		 	name = "July";
+			break;
+		 case 8:
+		 	name = "August";
+			break;
+		 case 9:
+		 	name = "September";
+			break;
+		 case 10:
+		 	name = "October";
+			break;
+		 case 11:
+		 	name = "November";
+			break;
+		 case 12:
+		 	name = "December";
+			break;
+	}
+}
+
+void Month::operator--(int) {
+     monthNumber--;
+	 switch(monthNumber) {
+		 case 1:
+		 	name = "January";
+			break;
+		 case 2:
+		 	name = "February";
+			break;
+		 case 3:
+		 	name = "March";
+			break;
+		 case 4:
+		 	name = "April";
+			break;
+		 case 5:
+		 	name = "May";
+			break;
+		 case 6:
+		 	name = "June";
+			break;
+		 case 7:
+		 	name = "July";
+			break;
+		 case 8:
+		 	name = "August";
+			break;
+		 case 9:
+		 	name = "September";
+			break;
+		 case 10:
+		 	name = "October";
+			break;
+		 case 11:
+		 	name = "November";
+			break;
+		 case 12:
+		 	name = "December";
+			break;
+	}
+}

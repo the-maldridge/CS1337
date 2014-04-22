@@ -29,6 +29,6 @@ mwa130030
 15.17: The diagram depicts multiple inheritance.
 15.18: a - innaccessible, b - innaccessible, c - protected, d - innaccessible, e - private, f - public, g - private, h - protected, i - public
 15.19: class SportUtility:public Van, public FourByFour { 
-       SportUtility();
+       SportUtility(int p, float w):Van(p), :FourByFour(w) {};
        ~SportUtility();
        }

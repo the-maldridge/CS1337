@@ -1,0 +1,34 @@
+Michael Aldridge
+mwa130030
+
+15.4: Private members may not be accessed via inheritance.  The protected members become private members through inheritance.
+15.5: Member access specification defines how a classes own members are defined and scoped.  Class access specification defines how inherited classes interact with the base class.
+15.6.A: a - private, b - private, c - private, setA - private, setB - private, setC - private
+15.6.B: a - private, b - private, c - private, setA - private, setB - protected, setC - protected
+15.6.C: a - private, b - protected, c - protected, setA - protected, setB - public, setC - public
+15.6.D: By default it will be private
+15.7: Entering the sky.
+      Entering the ground.
+      Leaving the ground.
+      Leaving the sky.
+15.8: Entering the sky.
+      Entering the Ground.
+      Leaving the Ground.
+      Leaving the sky.
+15.9: Overloading a function allows one to create handlers that do different things depending on the type of data given.  Redefining a function only changes what the one function does, and does not necessarily handle multiple datatypes.
+15.10: A static binding is decided by the compiler at the time of compilation, whereas a dynamic binding decides which function to call at runtime.  It is important to note that as the dynamic binding is not selected until runtime, it will necessarily be slower.
+15.11: Virtual functions are dynamically bound.
+15.12: 1
+       5
+15.13: 2
+       1
+15.14: 2
+       1
+15.15: 2
+15.16: The diagram depicts a chain of inheritance.
+15.17: The diagram depicts multiple inheritance.
+15.18: a - innaccessible, b - innaccessible, c - protected, d - innaccessible, e - private, f - public, g - private, h - protected, i - public
+15.19: class SportUtility:public Van, public FourByFour { 
+       SportUtility();
+       ~SportUtility();
+       }

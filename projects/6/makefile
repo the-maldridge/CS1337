@@ -1,7 +1,7 @@
 CC=g++
-CFLAGS= -O0 -g
+CFLAGS= -Wall -Wextra -Wuninitialized -fpermissive -O0 -g
 MAINFILE=main.cxx
-OBJECTFILE=singleLink.cxx node.cxx dnode.cxx
+OBJECTFILE=singleLink.cxx node.cxx dnode.cxx doubleLink.cxx
 EXECNAME=invdb
 
 all: objects main
@@ -17,3 +17,5 @@ clean:
 	rm -rf *.o *.cxx~ *.hxx~
 test:
 	./$(EXECNAME)
+valgrind:
+	valgrind ./$(EXECNAME)

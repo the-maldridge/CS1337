@@ -9,6 +9,7 @@ public:
   dNode();
   void setPrev(dNode*);
   dNode* getPrev();
+  friend std::ostream& operator<<(std::ostream& os, const dNode& n);
 };
 
 #endif

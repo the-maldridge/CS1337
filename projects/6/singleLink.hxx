@@ -4,7 +4,7 @@
 #include "node.hxx"
 
 class slist {
-private:
+protected:
   Node* head;
 public:
   slist();

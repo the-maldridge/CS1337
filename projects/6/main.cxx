@@ -97,7 +97,7 @@ bool valCost(float rCost, float wCost) {
   return true;
 }
 
-bool init(string fname, vector<dbrecord> &db) {
+bool init(string fname, dlink &db) {
 
   fstream disk(fname.c_str(), ios::in);
 
@@ -126,7 +126,13 @@ bool init(string fname, vector<dbrecord> &db) {
       //validate the incomming record
       if(valID(temp.id) && valCost(temp.rCost, temp.wCost)) {
 	cerr << "Valid record: " << temp.id << "  was loaded!" << endl;
-	db.push_back(temp);
+        dNode* tempNode = new dNode();
+	tempNode->setID(temp.id);
+	tempNode->setDesc(temp.desc);
+	tempNode->setQuantity(temp.quantity);
+	tempNode->setRCost(temp.rCost);
+	tempNode->setWCost(temp.wCost);
+	db.addNode(tempNode);
       } else {
 	cerr << "Invalid record: " << temp.id << "  was not loaded!" << endl;
       }
@@ -164,32 +170,20 @@ menuAction mainMenu() {
   return static_cast<menuAction>(choice);
 }
 
-void dumpdb(vector<dbrecord> &db) {
+void dumpdb(dlink &db) {
   //dump the entire database
   cout << "The database currently contains the following:" << endl;
   for(int i=0; i<db.size(); i++) {
-    cout << "----------BOR----------" << endl;
-    cout << "ID: " << db[i].id << endl;
-    cout << "Description: " << db[i].desc << endl;
-    cout << "Quantity on hand: " << db[i].quantity << endl;
-    cout << "Wholesale Cost: " << db[i].wCost << endl;
-    cout << "Retail Cost: " << db[i].rCost << endl;
-    cout << "----------EOR----------" << endl;
+    cout << db[i];
   }
 }
 
-void dumpdb(vector<dbrecord> &db, int i) {
+void dumpdb(dlink &db, int i) {
   //dump a select record from the database
-    cout << "----------BOR----------" << endl;
-    cout << "ID: " << db[i].id << endl;
-    cout << "Description: " << db[i].desc << endl;
-    cout << "Quantity on hand: " << db[i].quantity << endl;
-    cout << "Wholesale Cost: " << db[i].wCost << endl;
-    cout << "Retail Cost: " << db[i].rCost << endl;
-    cout << "----------EOR----------" << endl;
+  cout << db[i] << endl;
 }
 
-bool uniqueID(vector<dbrecord> db, string id) {
+bool uniqueID(dlink &db, string id) {
   //verify the ID is unique
   bool match=false;
 
@@ -197,7 +191,7 @@ bool uniqueID(vector<dbrecord> db, string id) {
   for(int i=0; i<db.size(); i++) {
     match=false;
     for(int j=0; j<7; j++) {
-      if(db[i].id.c_str()[j]==id.c_str()[j]) {
+      if(db[i].getID().c_str()[j]==id.c_str()[j]) {
 	match=true;
       } else {
 	match=false;
@@ -215,7 +209,7 @@ bool uniqueID(vector<dbrecord> db, string id) {
   return true;
 }
 
-void addRecord(vector<dbrecord> &db) {
+void addRecord(dlink &db) {
   dbrecord temp;
 
   cout << "Add a record:" << endl;
@@ -252,37 +246,32 @@ void addRecord(vector<dbrecord> &db) {
     cin >> temp.rCost;
   } while(!valCost(temp.rCost, temp.wCost));
 
-  db.push_back(temp);
+  dNode* tempNode = new dNode();
+  tempNode->setID(temp.id);
+  tempNode->setDesc(temp.desc);
+  tempNode->setQuantity(temp.quantity);
+  tempNode->setRCost(temp.rCost);
+  tempNode->setWCost(temp.wCost);
+  db.addNode(tempNode);
+  cout << db[0];
 }
 
-bool sortCompID(const dbrecord &a, const dbrecord &b) {
-  //this function is needed to make std::sort() work on structs
-  return (a.id<b.id)?true:false;
-}
-
-void save(vector<dbrecord> db, string fname) {
+void save(dlink &db, string fname) {
 
   //sort everything and open the file
   cout << "Ordering output..." << endl;
-  sort(db.begin(), db.end(), sortCompID);
   fstream disk(fname.c_str(), ios::trunc | ios::out);
 
   //write it to disk
   cout << "Writing data to disk..." << endl;
   for(int i=0; i<db.size(); i++) {
-    disk << db[i].id << endl;
-    disk << db[i].desc << endl;
-    disk << db[i].quantity << endl;
-    disk << setprecision(2) << fixed << db[i].wCost << endl;
-    disk << setprecision(2) << fixed << db[i].rCost << endl;
-    disk << endl;
+    disk << db[i];
   }
-
   disk.close();
   cout << "Finished saving to disk" << endl;
 }
 
-int searchRecord(vector<dbrecord> &db, searchAction mode) {
+int searchRecord(dlink &db, searchAction mode) {
   string id;
   int recordLoc=0;
   bool found=false;
@@ -296,19 +285,19 @@ int searchRecord(vector<dbrecord> &db, searchAction mode) {
 
   for(; recordLoc<db.size(); recordLoc++) {
     if(mode==REMOVE) {
-      if(db[recordLoc].id==id) {
+      if(db[recordLoc].getID()==id) {
 	found=true;
 	dumpdb(db, recordLoc);
 	break;
       }
     } else if(mode==MODIFY) {
-      if(db[recordLoc].id==id) {
+      if(db[recordLoc].getID()==id) {
 	found=true;
 	dumpdb(db, recordLoc);
 	break;
       }
     } else if(mode==FIND) {
-      if((db[recordLoc].id==id) || (db[recordLoc].desc.find(id)!=string::npos)) {
+      if((db[recordLoc].getID()==id) || (db[recordLoc].getDesc().find(id)!=string::npos)) {
 	dumpdb(db, recordLoc);
 	found=true;
       }
@@ -325,7 +314,7 @@ int searchRecord(vector<dbrecord> &db, searchAction mode) {
       cin >> choice;
     } while(toupper(choice) != 'Y' && toupper(choice)!='N');
     if(toupper(choice)=='Y') {
-      cout << "Deleting record with id " << db[recordLoc].id << endl;
+      cout << "Deleting record with id " << db[recordLoc].getID() << endl;
       return recordLoc;
     } else {
       cout << "Delete cancelled, record preserved" << endl;
@@ -338,7 +327,7 @@ int searchRecord(vector<dbrecord> &db, searchAction mode) {
       cin >> choice;
     } while(toupper(choice) != 'Y' && toupper(choice)!='N');
     if(toupper(choice)=='Y') {
-      cout << "Editing record with id " << db[recordLoc].id << endl;
+      cout << "Editing record with id " << db[recordLoc].getID() << endl;
       return recordLoc;
     } else {
       cout << "Edit cancelled, record preserved" << endl;
@@ -348,21 +337,21 @@ int searchRecord(vector<dbrecord> &db, searchAction mode) {
   else return -1;
 }
 
-void deleteRecord(vector<dbrecord> &db, int recordLoc) {
+void deleteRecord(dlink &db, int recordLoc) {
   //erase the record at a given offset
-  db.erase(db.begin()+recordLoc);
+  db.delNode(recordLoc);
 }
 
-void inventoryReport(vector<dbrecord> db) {
+void inventoryReport(dlink &db) {
   //generate an inventory report
   int items = 0;
   float wholesale = 0, retail = 0;
 
   //total the costs based on how many of each item are in inventory
   for(int i=0; i<db.size(); i++) {
-    items += db[i].quantity;
-    wholesale += db[i].quantity * db[i].wCost;
-    retail += db[i].quantity * db[i].rCost;
+    items += db[i].getQuantity();
+    wholesale += db[i].getQuantity() * db[i].getWCost();
+    retail += db[i].getQuantity() * db[i].getRCost();
   }
 
   //display the report
@@ -372,9 +361,11 @@ void inventoryReport(vector<dbrecord> db) {
   cout << "Total retail value: " << retail << endl;
 }
 
-void editRecord(vector<dbrecord> &db, int loc) {
+void editRecord(dlink &db, int loc) {
   queue<int> choice;
-  int bounce;
+  int bounce, newquantity;
+  string newstr;
+  double newprice;
 
   //find out what they want to edit
   cout << "What would you like to edit?" << endl;
@@ -404,24 +395,27 @@ void editRecord(vector<dbrecord> &db, int loc) {
     case 1:
       //edit the description
       cout << "The current description is:" << endl;
-      cout << db[loc].desc << endl;
+      cout << db[loc].getDesc() << endl;
       cout << "Please enter new description:" << endl;
-      getline(cin, db[loc].desc);
+      getline(cin, newstr);
+      db[loc].setDesc(newstr);
       break;
     case 2:
       //edit the quantity
-      cout << "The current quantity is: " << db[loc].quantity << endl;
+      cout << "The current quantity is: " << db[loc].getQuantity() << endl;
       cout << "Input new quantity: ";
-      cin >> db[loc].quantity;
+      cin >> newquantity;
+      db[loc].setQuantity(newquantity);
       break;
     case 3:
       //edit the wholesale cost
-      cout << "The wholesale cost is $" << db[loc].wCost << endl;
+      cout << "The wholesale cost is $" << db[loc].getWCost() << endl;
       cout << "Enter new wholesale cost: ";
-      cin >> db[loc].wCost;
+      cin >> newprice;
+      db[loc].setWCost(newprice);
 
       //validate the cost
-      if(valCost(db[loc].rCost, db[loc].wCost)) {
+      if(valCost(db[loc].getRCost(), db[loc].getWCost())) {
 	cout << "Costs valid" << endl;
 	break;
       } else {
@@ -431,11 +425,12 @@ void editRecord(vector<dbrecord> &db, int loc) {
       }
     case 4:
       //edit the retail cost
-      cout << "The retail cost is $" << db[loc].rCost << endl;
+      cout << "The retail cost is $" << db[loc].getRCost() << endl;
       cout << "Enter new retail cost: ";
-      cin >> db[loc].rCost;
+      cin >> newprice;
+      db[loc].setRCost(newprice);
 
-      if(valCost(db[loc].rCost, db[loc].wCost)) {
+      if(valCost(db[loc].getRCost(), db[loc].getWCost())) {
 	cout << "Costs valid" << endl;
 	break;
       } else {
@@ -451,7 +446,7 @@ void editRecord(vector<dbrecord> &db, int loc) {
 
 int main() {
   menuAction action;
-  vector<dbrecord> database;
+  dlink database;
   int loc;
 
   if(init("inventory.dat", database)) {

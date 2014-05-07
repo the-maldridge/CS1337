@@ -5,7 +5,7 @@
 #include <sstream>
 
 class Node {
-private:
+protected:
   std::string ID;
   std::string desc;
   int quantity;
@@ -35,6 +35,6 @@ public:
   void setWCost(double);
   double getWCost();
 
-  friend std::ostream& operator<<(std::ostream& os, const Node* n);
+  friend std::ostream& operator<<(std::ostream& os, const Node& n);
 };
 #endif

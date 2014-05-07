@@ -1,7 +1,9 @@
 #include "doubleLink.hxx"
+#include <cassert>
 
 dlink::dlink() {
   tail = NULL;
+  numElements = 0;
 }
 
 void dlink::addNode(dNode* n) {
@@ -10,24 +12,21 @@ void dlink::addNode(dNode* n) {
     head = n;
   } else {
     //case where we are adding somewhere after head
-    dNode *ptr = head;
+    dNode* ptr = static_cast<dNode*>(head);
     while (ptr->getNext() != NULL) {
-      if ((ptr->getNext())->getID() > n->getID()) {
-	n->setNext(ptr->getNext()); //tell n where next is
-	n->setPrev(ptr); //tell n where prev is
-	ptr->setNext(n); //tell previous where n is
-	n->getNext()->setPrev(n); //tell next where n is
-	return;
+      if(ptr->getNext()->getID() > n->getID()) {
+	n->setNext(ptr->getNext());
+	n->setPrev(ptr);
+	ptr->setNext(n);
       } else {
-	ptr=ptr->getNext();
+	ptr = ptr->getNext();
       }
     }
-    ptr->setNext(n);
   } 
   numElements++;
 }
 
-void dlink::delNode(int i) {
+void dlink::delNode(int n) {
   dNode* current;
 
   //find which one is to be deleted
@@ -36,7 +35,7 @@ void dlink::delNode(int i) {
   }
 
   //relink around current
-  current->getNext()->setPrev(current->getPrev()); //set prev
+  static_cast<dNode*>(current->getNext())->setPrev(current->getPrev()); //set prev
   current->getPrev()->setNext(current->getNext()); //set next
 
   //remove the node we originally wanted to delete
@@ -47,7 +46,10 @@ void dlink::delNode(int i) {
 }
 
 dNode& dlink::operator[](int n) {
-  dNode* current;
+  dNode* current = head;
+
+  //bounds check or die
+  assert(0<=n && n < numElements);
 
   //find the node according to the offset
   for(int i=0; i<n; i++) {
@@ -61,3 +63,4 @@ dNode& dlink::operator[](int n) {
 int dlink::size() {
   return numElements;
 }
+    

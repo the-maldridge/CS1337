@@ -11,9 +11,10 @@ private:
 public:
   dlink();
 
-  void addNode(Node*);
+  void addNode(dNode*);
   void delNode(int);
 
   int size();
+  dNode& operator[](int);
 };
 #endif

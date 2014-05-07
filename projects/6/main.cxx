@@ -253,7 +253,6 @@ void addRecord(dlink &db) {
   tempNode->setRCost(temp.rCost);
   tempNode->setWCost(temp.wCost);
   db.addNode(tempNode);
-  cout << db[0];
 }
 
 void save(dlink &db, string fname) {
@@ -397,6 +396,7 @@ void editRecord(dlink &db, int loc) {
       cout << "The current description is:" << endl;
       cout << db[loc].getDesc() << endl;
       cout << "Please enter new description:" << endl;
+      cin.ignore(1, '\n');
       getline(cin, newstr);
       db[loc].setDesc(newstr);
       break;

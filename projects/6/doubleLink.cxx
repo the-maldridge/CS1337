@@ -17,11 +17,12 @@ void dlink::addNode(dNode* n) {
       if(ptr->getNext()->getID() > n->getID()) {
 	n->setNext(ptr->getNext());
 	n->setPrev(ptr);
-	ptr->setNext(n);
+	break;
       } else {
 	ptr = ptr->getNext();
       }
     }
+    ptr->setNext(n);
   } 
   numElements++;
 }

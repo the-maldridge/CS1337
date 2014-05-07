@@ -11,7 +11,6 @@ public:
   ~slist();
 
   virtual void add(Node*);
-  virtual void purge();
 };
 
 

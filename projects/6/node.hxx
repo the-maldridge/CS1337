@@ -2,6 +2,7 @@
 #define NODE_H
 #include <cstddef>
 #include <string>
+#include <sstream>
 
 class Node {
 private:
@@ -33,6 +34,7 @@ public:
 
   void setWCost(double);
   double getWCost();
-};
 
+  friend std::ostream& operator<<(std::ostream& os, const Node* n);
+};
 #endif

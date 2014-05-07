@@ -2,13 +2,15 @@
 #define DOUBLE_H
 
 #include "singleLink.hxx"
-#include "node.hxx"
+#include "dnode.hxx"
 
 class dlink: private slink {
 private:
-  Node* prev;
-
-
+  dNode* tail;
+public:
+  dlink();
+  void addNode(Node*);
+  void delNode(int);
 };
 
 #endif

@@ -19,7 +19,7 @@ Node* Node::getNext() {
   return next;
 }
 
-void Node::setID(string s) {
+void Node::setID(std::string s) {
   ID = s;
 }
 
@@ -27,7 +27,7 @@ std::string Node::getID() {
   return ID;
 }
 
-void Node::setDesc(string s) {
+void Node::setDesc(std::string s) {
   desc = s;
 }
 
@@ -57,4 +57,14 @@ void Node::setWCost(double c) {
 
 double Node::getWCost() {
   return wCost;
-};
+}
+
+std::ostream& operator<<(std::ostream& os, const Node* n) {
+  os << n->ID << std::endl;
+  os << n->desc << std::endl;
+  os << n->quantity << std::endl;
+  os << n->wCost << std::endl;
+  os << n->rCost << std::endl;
+  os << std::endl;
+  return os;
+}

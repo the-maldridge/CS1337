@@ -1,15 +1,16 @@
 /*
-Revenge of the database, need I say more?
+Curse of the database, time to aquire a silver compiler flag to kill it once and for all
 */
 
 #include <iostream>
 #include <fstream>
-#include <vector>
 #include <algorithm>
 #include <iomanip>
 #include <cctype>
 #include <cmath>
 #include <queue>
+#include "doubleLink.hxx"
+
 using namespace std;
 
 

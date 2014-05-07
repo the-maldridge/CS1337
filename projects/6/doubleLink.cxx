@@ -24,6 +24,7 @@ void dlink::addNode(dNode* n) {
     }
     ptr->setNext(n);
   } 
+  numElements++;
 }
 
 void dlink::delNode(int i) {
@@ -41,9 +42,11 @@ void dlink::delNode(int i) {
   //remove the node we originally wanted to delete
   current->setNext(NULL); //fully unlink to prevent unintentional deletion
   delete current;
+
+  numElements--;
 }
 
-dNode& LinkList::operator[](int n) {
+dNode& dlink::operator[](int n) {
   dNode* current;
 
   //find the node according to the offset
@@ -53,4 +56,8 @@ dNode& LinkList::operator[](int n) {
 
   //return the node object itself
   return *current;
+}
+
+int dlink::size() {
+  return numElements;
 }

@@ -4,13 +4,16 @@
 #include "singleLink.hxx"
 #include "dnode.hxx"
 
-class dlink: private slink {
+class dlink: private slist {
 private:
   dNode* tail;
+  int numElements;
 public:
   dlink();
+
   void addNode(Node*);
   void delNode(int);
-};
 
+  int size();
+};
 #endif

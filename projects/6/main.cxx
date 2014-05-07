@@ -356,8 +356,8 @@ void inventoryReport(dlink &db) {
   //display the report
   cout << "Report is as follows:" << endl;
   cout << "Total number of items in inventory: " << items << endl;
-  cout << "Total wholesale value: " << wholesale << endl;
-  cout << "Total retail value: " << retail << endl;
+  cout << "Total wholesale value: " << setprecision(2) << fixed << wholesale << endl;
+  cout << "Total retail value: " << setprecision(2) << fixed << retail << endl;
 }
 
 void editRecord(dlink &db, int loc) {
